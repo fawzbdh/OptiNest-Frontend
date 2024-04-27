@@ -1,41 +1,47 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
+import { useDispatch,useSelector } from 'react-redux';
+ import {fetchproject} from '../../store/reducers/projectReducer'
+ import moment from 'moment';
+ import { DatePicker } from 'antd'
+
 
 function ProjetSuivi() {
+    const {data} = useSelector(state=>state.project)
+    const dispatch = useDispatch();
+
+useEffect(()=>{
+ dispatch(fetchproject())
+
+    },[dispatch])
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'firstName', headerName: 'Nom', width: 130 },
-    { field: 'lastName', headerName: 'Statut', width: 130 },
+    { field: 'id', headerName: 'ID',width:150 },
+    { field: 'name', headerName: 'Nom project' ,width:150},
+    { field: 'createdAt', headerName: 'Date de creation',valueGetter: (value, row) => moment(row.createdAt).format('YYYY-MM-DD'),width:150},
     {
-      field: 'age',
-      headerName: 'DÉBUTÉ LE',
-      type: 'number',
-      width: 90
+      field: 'status',
+      headerName: 'status'
+      ,width:150
     },
-    {
-      field: 'fullName',
-      headerName: 'ACTIONS',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`
-    }
-  ];
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 }
+    { field: 'steps', headerName: 'steps',width:150 },
   ];
 
+const user=JSON.parse(window.localStorage.getItem('user'))
+const onChange = (date, dateString) => {
+  console.log(date, dateString);
+};
   return (
     <MainCard>
       <Typography variant="h3">Suivi Projet</Typography>
       <br/>
-      <DataGrid autoHeight sx={{ width: '90%' }} rows={rows} columns={columns} />
+      <DatePicker onChange={onChange} />
+      <br/>
+      <br/>
+      <DataGrid autoHeight sx={{ width: '99%',margin:"auto" }} rows={data.filter((item)=>item.id!==user?.id)} columns={columns} />
     </MainCard>
   );
 }
