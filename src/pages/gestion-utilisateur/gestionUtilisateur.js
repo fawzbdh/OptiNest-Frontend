@@ -49,7 +49,7 @@ function GestionUtilisateurs() {
     Swal.fire({
       icon: 'success',
       title: 'Success',
-      text: 'Client created successfully'
+      text: 'utilisateur created successfully'
     });
     dispatch(fetchUser());
 
@@ -61,21 +61,6 @@ function GestionUtilisateurs() {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  // const handleDelete = (id) => {
-  //   Swal.fire({
-  //     title: 'Êtes-vous sûr?',
-  //     text: 'Vous ne pourrez pas revenir en arrière !',
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#3085d6',
-  //     cancelButtonColor: '#d33',
-  //     confirmButtonText: 'Oui, supprimer !'
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       dispatch(deleteUser(id));
-  //     }
-  //   });
-  // };
   return (
     <div style={{ height: 400, width: '100%' }}>
       <MainCard>
@@ -164,7 +149,7 @@ function GestionUtilisateurs() {
                       onChange={handleChange}
                     >
                       <MenuItem value="admin">Admin</MenuItem>
-                      <MenuItem value="client">Client</MenuItem>
+                      <MenuItem value="utilisateur">Utilisateur</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>

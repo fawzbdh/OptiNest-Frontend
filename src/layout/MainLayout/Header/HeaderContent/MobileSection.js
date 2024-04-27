@@ -4,9 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { AppBar, Box, ClickAwayListener, IconButton, Paper, Popper, Toolbar } from '@mui/material';
 
-// project import
-import Search from './Search';
-import Profile from './Profile';
 import Transitions from 'components/@extended/Transitions';
 
 // assets
@@ -85,10 +82,7 @@ const MobileSection = () => {
             <Paper sx={{ boxShadow: theme.customShadows.z1 }}>
               <ClickAwayListener onClickAway={handleClose}>
                 <AppBar color="inherit">
-                  <Toolbar>
-                    <Search />
-                    <Profile />
-                  </Toolbar>
+                  <Toolbar></Toolbar>
                 </AppBar>
               </ClickAwayListener>
             </Paper>

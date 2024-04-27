@@ -6,8 +6,12 @@ import {
   createUserFailure,
   createUserSuccess,
   deleteUserFailure,
-  deleteUserSuccess
+  deleteUserSuccess,
+  updateUserFailure,
+  updateUserSuccess,
+  updateUserRequest
 } from 'store/reducers/userReducer';
+import Swal from 'sweetalert2';
 
 const BASE_URL = 'http://localhost:8000/api'; // Replace with your API endpoint
 
@@ -59,5 +63,45 @@ export const deleteUser = (userId) => async (dispatch) => {
     dispatch(deleteUserSuccess(userId)); // Dispatch success action with userId as payload
   } catch (error) {
     dispatch(deleteUserFailure(error || 'An error occurred while deleting user'));
+  }
+};
+export const updateUser = (userId, userData) => async (dispatch) => {
+  dispatch(updateUserRequest());
+
+  try {
+    const response = await axiosInstance.put(`/user/${userId}`, userData);
+    dispatch(updateUserSuccess(response.data));
+    // Optionally, display a success message with SweetAlert
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: 'User updated successfully'
+    });
+  } catch (error) {
+    let errorMessage = 'An error occurred';
+    if (error.response && error.response.data && error.response.data.errors) {
+      // Extract the first error message from the API response
+      errorMessage = error.response.data.errors[0].msg;
+      dispatch(updateUserFailure(errorMessage));
+      // Display error message with SweetAlert
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: errorMessage
+      });
+    } else {
+      let errorMessage = 'An error occurred';
+      if (error.response && error.response.data && error.response.data.errors) {
+        errorMessage = error.response.data.errors[0].msg;
+      }
+      console.log('Error message:', errorMessage);
+      dispatch(updateUserFailure(errorMessage));
+      // Display generic error message with SweetAlert
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: errorMessage
+      });
+    }
   }
 };

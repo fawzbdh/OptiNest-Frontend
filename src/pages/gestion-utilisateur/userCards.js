@@ -17,102 +17,43 @@ import {
   InputLabel,
   FormControl
 } from '@mui/material';
-import { Formik, Form } from 'formik'; // Import Formik components
+import { Formik, Form } from 'formik';
 import circleUser from 'assets/images/icons/circle-user.png';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteItem from 'components/delete/delete';
+import { useDispatch } from 'react-redux';
+import { fetchUser, updateUser } from 'utils/usersApi';
 
 function UserCards({ users }) {
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [selectedUser, setSelectedUser] = useState({ username: '', email: '', role: '' }); // Initialize selectedUser with a new UsersModel instance
+  const [selectedUser, setSelectedUser] = useState({});
   const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false);
   const toggleDeleteDrawer = () => {
     setDeleteDrawerOpen(!deleteDrawerOpen);
   };
-
+  const dispatch = useDispatch();
   const toggleDrawer = (user) => {
-    console.log(user);
     setSelectedUser(user);
     setOpenDrawer(!openDrawer);
   };
 
   const handleSubmit = (values) => {
-    console.log(values); // Handle form data submission
-  };
-  const inputStyles = {
-    '& .MuiFilledInput-root': {
-      color: '#6E7191',
-      fontFamily: 'Arial',
-      fontWeight: 'bold',
-      borderColor: 'transparent',
-      backgroundColor: '#EFF0F6',
-      borderRadius: '18px',
-      '&:before': {
-        borderColor: 'transparent',
-        borderWidth: '2px'
-      },
-      '&:after': {
-        borderWidth: '2px',
+    console.log('Values:', values);
+    dispatch(updateUser(selectedUser.id, values));
+    dispatch(fetchUser());
 
-        borderColor: 'transparent'
-      }
-    },
-    '& .MuiInputLabel-filled': {
-      color: '#6E7191',
-      fontWeight: 'bold',
-      '&.Mui-focused': {
-        borderWidth: '2px',
-        color: '#6E7191',
-
-        borderColor: 'transparent',
-        fontWeight: 'bold'
-      }
-    },
-    '&:hover .MuiFilledInput-root': {
-      borderColor: 'transparent',
-      backgroundColor: '#EFF0F6',
-
-      '&:before': {
-        borderWidth: '2px',
-
-        borderColor: 'transparent'
-      }
-    },
-    '&:hover .MuiInputLabel-filled': {
-      '&.Mui-focused': {
-        borderWidth: '2px',
-        backgroundColor: '#EFF0F6',
-
-        borderColor: 'transparent'
-      }
-    }
+    setOpenDrawer(false);
   };
 
   const getRandomColor = () => {
-    const colors = [
-      '#f44336',
-      '#e91e63',
-      '#9c27b0',
-      '#673ab7',
-      '#3f51b5',
-      '#2196f3',
-      '#03a9f4',
-      '#00bcd4',
-      '#009688',
-      '#4caf50',
-      '#8bc34a',
-      '#cddc39',
-      '#ffeb3b',
-      '#ffc107',
-      '#ff9800',
-      '#ff5722',
-      '#795548',
-      '#9e9e9e',
-      '#607d8b'
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   };
-  console.log('selected :  ', selectedUser);
+
   return (
     <Grid container spacing={2}>
       {users.map((user) => (
@@ -122,26 +63,20 @@ function UserCards({ users }) {
               <Grid container alignItems="center" justifyContent="center" spacing={1}>
                 <Grid item xs>
                   <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                    <Box mt={2}></Box>
-
                     <Avatar
                       sx={{
                         height: '80px',
                         width: '80px',
                         backgroundColor: getRandomColor(),
-                        color: '#fff' // You may need to adjust the text color based on the background color
+                        color: '#fff'
                       }}
                     >
                       {user.username?.charAt(0).toUpperCase()}
                     </Avatar>
-                    <Box mt={2}></Box>
                     <Typography variant="h5">{user.username}</Typography>
-
                     <Typography variant="subtitle1" color="textSecondary">
                       {user.role}
                     </Typography>
-                    <Box mt={1}></Box>
-
                     <Chip
                       variant="combined"
                       icon={<img src={circleUser} alt="user" />}
@@ -169,58 +104,62 @@ function UserCards({ users }) {
           }
         }}
       >
-        <Box sx={{ width: '100%', p: 2 }}>
-          <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
-            <IconButton onClick={() => toggleDrawer(selectedUser)}>
-              <Avatar sx={{ backgroundColor: '#EFF0F6' }}>
-                <CloseIcon sx={{ color: '#222C60' }} />
-              </Avatar>
-            </IconButton>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Avatar
-                sx={{
-                  height: '70px',
-                  width: '70px',
-                  backgroundColor: getRandomColor(),
-                  color: '#fff' // You may need to adjust the text color based on the background color
-                }}
-              >
-                {selectedUser?.username?.charAt(0).toUpperCase()}
-              </Avatar>
-              <div style={{ marginLeft: '10px' }}>
-                <Typography variant="h6">{selectedUser?.username}</Typography>
-                <Typography variant="subtitle1">{selectedUser?.role}</Typography>
-              </div>
-            </div>
-            <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
-              <Button style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }} type="submit" variant="outlined">
-                Modifier
-              </Button>
-              <Box mr={2}></Box>
-              <Button
-                style={{ borderRadius: '20px', backgroundColor: '#ED2E7E' }}
-                onClick={toggleDeleteDrawer}
-                variant="contained"
-                color="primary"
-              >
-                Supprimer
-              </Button>
-            </Box>
-          </Box>
+        <Formik
+          initialValues={{
+            username: selectedUser?.username || '',
+            role: selectedUser?.role || '',
+            email: selectedUser?.email || ''
+          }}
+          onSubmit={handleSubmit}
+        >
+          {({ values, handleChange }) => (
+            <Form>
+              <Box sx={{ width: '100%', p: 2 }}>
+                <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
+                  <IconButton onClick={() => toggleDrawer(selectedUser)}>
+                    <Avatar sx={{ backgroundColor: '#EFF0F6' }}>
+                      <CloseIcon sx={{ color: '#222C60' }} />
+                    </Avatar>
+                  </IconButton>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Avatar
+                      sx={{
+                        height: '70px',
+                        width: '70px',
+                        backgroundColor: getRandomColor(),
+                        color: '#fff'
+                      }}
+                    >
+                      {selectedUser?.username?.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <div style={{ marginLeft: '10px' }}>
+                      <Typography variant="h6">{selectedUser?.username}</Typography>
+                      <Typography variant="subtitle1">{selectedUser?.role}</Typography>
+                    </div>
+                  </div>
+                  <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
+                    <Button
+                      style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
+                      type="submit"
+                      variant="outlined"
+                      onClick={() => handleSubmit()}
+                    >
+                      Modifier
+                    </Button>
+                    <Box mr={2}></Box>
+                    <Button
+                      style={{ borderRadius: '20px', backgroundColor: '#ED2E7E' }}
+                      onClick={toggleDeleteDrawer}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Supprimer
+                    </Button>
+                  </Box>
+                </Box>
 
-          {/* Formik form */}
-          <Formik
-            initialValues={{
-              username: selectedUser?.username || '',
-              role: selectedUser?.role || '',
-              email: selectedUser?.email || ''
-            }}
-            onSubmit={handleSubmit}
-          >
-            {({ values, handleChange }) => (
-              <Form>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <TextField
@@ -228,7 +167,6 @@ function UserCards({ users }) {
                       variant="filled"
                       type="text"
                       label="Nom d'utilisateur"
-                      sx={inputStyles}
                       fullWidth
                       margin="normal"
                       value={values.username}
@@ -242,7 +180,6 @@ function UserCards({ users }) {
                       variant="filled"
                       type="text"
                       label="Email"
-                      sx={inputStyles}
                       fullWidth
                       margin="normal"
                       value={values.email}
@@ -257,20 +194,19 @@ function UserCards({ users }) {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         name="role"
-                        value={selectedUser?.role}
+                        value={values.role}
                         onChange={handleChange}
-                        
                       >
                         <MenuItem value="admin">Admin</MenuItem>
-                        <MenuItem value="client">Client</MenuItem>
+                        <MenuItem value="utilisateur">utilisateur</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Form>
-            )}
-          </Formik>
-        </Box>
+              </Box>
+            </Form>
+          )}
+        </Formik>
       </Drawer>
       {/* Delete Confirmation Drawer */}
       <Drawer
@@ -279,14 +215,13 @@ function UserCards({ users }) {
         onClose={toggleDeleteDrawer}
         sx={{
           width: '50vw',
-          zIndex: 1301, // higher zIndex than the main drawer to display on top
+          zIndex: 1301,
           '& .MuiDrawer-paper': {
             width: '50vw',
             minWidth: '500px'
           }
         }}
       >
-        {/* Content of the delete confirmation drawer */}
         <Box sx={{ width: '100%', p: 2 }}>
           <DeleteItem toggleDrawer={toggleDrawer} selectedUser={selectedUser} toggleDeleteDrawer={toggleDeleteDrawer} />
         </Box>

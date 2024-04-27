@@ -3,11 +3,15 @@ import DeleteIcon from 'assets/images/icons/delete.svg';
 import { Button, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types'; // Import PropTypes
 import Swal from 'sweetalert2'; // Import Swal
+import { deleteUser } from 'utils/usersApi';
+import { useDispatch } from 'react-redux';
 
 function DeleteItem({ toggleDeleteDrawer, toggleDrawer, selectedUser }) {
+  const dispatch = useDispatch();
   const handleDelete = () => {
     toggleDeleteDrawer(); // Close the delete drawer
     toggleDrawer(selectedUser);
+    dispatch(deleteUser(selectedUser.id));
     Swal.fire({
       // Show SweetAlert
       icon: 'success',
@@ -16,6 +20,7 @@ function DeleteItem({ toggleDeleteDrawer, toggleDrawer, selectedUser }) {
     });
     // Handle delete operation here using selectedUser
   };
+  console.log(selectedUser);
 
   return (
     <div
@@ -55,7 +60,8 @@ DeleteItem.propTypes = {
   toggleDrawer: PropTypes.func.isRequired, // Ensure toggleDeleteDrawer is a function and required
 
   selectedUser: PropTypes.shape({
-    username: PropTypes.string.isRequired // Validate selectedUser's first_name as a string and required
+    username: PropTypes.string.isRequired, // Validate selectedUser's first_name as a string and required
+    id: PropTypes.number.isRequired
     // Add validation for other properties of selectedUser if needed
   }).isRequired // Ensure selectedUser is an object and required
 };

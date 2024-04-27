@@ -8,6 +8,8 @@ const initialState = {
   statusCreate: null, // Add status field to hold HTTP status codes
   errorDelete: null,
   statusDelete: null,
+  errorUpdate: null,
+  statusUpdate: null,
 
   status: null // Add status field to hold HTTP status codes
 };
@@ -54,6 +56,22 @@ const userSlice = createSlice({
       state.loading = false;
       state.errorDelete = action.payload;
       state.statusDelete = 400; // Set status from payload
+    },
+
+    updateUserRequest: (state) => {
+      state.loading = true;
+      state.errorUpdate = null;
+      state.statusUpdate = null; // Reset status when making a new request
+    },
+    updateUserSuccess: (state) => {
+      state.loading = false;
+      state.statusUpdate = 200; // Set status to 200 for success
+      state.errorUpdate = null; // Reset error for success
+    },
+    updateUserFailure: (state, action) => {
+      state.loading = false;
+      state.errorUpdate = action.payload;
+      state.statusUpdate = 400; // Set status from payload
     }
   }
 });
@@ -65,6 +83,9 @@ export const {
   createUserSuccess,
   createUserFailure,
   deleteUserSuccess,
-  deleteUserFailure
+  deleteUserFailure,
+  updateUserSuccess,
+  updateUserFailure,
+  updateUserRequest
 } = userSlice.actions;
 export default userSlice.reducer;
