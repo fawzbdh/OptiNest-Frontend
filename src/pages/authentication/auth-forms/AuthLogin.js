@@ -45,12 +45,14 @@ function AuthLogin() {
       });
 
       // If login successful, save access token to local storage
-      localStorage.setItem('token', response.data.tokens);
+      console.log(response.data)
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.data))
 
       // Reset form
       setSubmitting(false);
       setLoginError(null);
-      navigate('/dashboard/default');
+      navigate('/');
       Swal.fire({
         title: 'Connexion réussie!',
         icon: 'success',
