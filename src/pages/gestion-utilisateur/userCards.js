@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Card, CardContent, Avatar, IconButton, Typography, Box, Chip, Drawer, Button, TextField } from '@mui/material';
+import {
+  Grid,
+  Card,
+  CardContent,
+  Avatar,
+  IconButton,
+  Typography,
+  Box,
+  Chip,
+  Drawer,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl
+} from '@mui/material';
 import { Formik, Form } from 'formik'; // Import Formik components
 import circleUser from 'assets/images/icons/circle-user.png';
 import CloseIcon from '@mui/icons-material/Close';
@@ -235,18 +251,20 @@ function UserCards({ users }) {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      name="role"
-                      variant="filled"
-                      type="text"
-                      sx={inputStyles}
-                      label="Role"
-                      fullWidth
-                      margin="normal"
-                      value={values.role}
-                      onChange={handleChange}
-                      InputProps={{ disableUnderline: true }}
-                    />
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel id="demo-simple-select-label">Rôle</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        name="role"
+                        value={selectedUser?.role}
+                        onChange={handleChange}
+                        
+                      >
+                        <MenuItem value="admin">Admin</MenuItem>
+                        <MenuItem value="client">Client</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
                 </Grid>
               </Form>

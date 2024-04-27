@@ -12,7 +12,7 @@ function DeleteItem({ toggleDeleteDrawer, toggleDrawer, selectedUser }) {
       // Show SweetAlert
       icon: 'success',
       title: 'Suppression réussie!',
-      text: `Le profil de ${selectedUser.first_name} ${selectedUser.last_name} a été supprimé avec succès.`
+      text: `Le profil de ${selectedUser.username} a été supprimé avec succès.`
     });
     // Handle delete operation here using selectedUser
   };
@@ -31,7 +31,7 @@ function DeleteItem({ toggleDeleteDrawer, toggleDrawer, selectedUser }) {
     >
       <img width={100} height={100} src={DeleteIcon} alt="delete" />
       <Typography variant="body1" style={{ fontWeight: 'bold', marginTop: '20px' }}>
-        Suppression du profil de {selectedUser.first_name} {selectedUser.last_name}
+        Suppression du profil de {selectedUser.username}
       </Typography>
       <Typography variant="body1" style={{ fontStyle: 'italic', marginTop: '10px' }}>
         La suppression d’un profil d’utilisateur est définitive, tous les détails et l’achat seront supprimés
@@ -55,8 +55,7 @@ DeleteItem.propTypes = {
   toggleDrawer: PropTypes.func.isRequired, // Ensure toggleDeleteDrawer is a function and required
 
   selectedUser: PropTypes.shape({
-    first_name: PropTypes.string.isRequired, // Validate selectedUser's first_name as a string and required
-    last_name: PropTypes.string.isRequired // Validate selectedUser's last_name as a string and required
+    username: PropTypes.string.isRequired // Validate selectedUser's first_name as a string and required
     // Add validation for other properties of selectedUser if needed
   }).isRequired // Ensure selectedUser is an object and required
 };
