@@ -1,47 +1,164 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MainCard from 'components/MainCard';
-import { useDispatch,useSelector } from 'react-redux';
- import {fetchproject} from '../../store/reducers/projectReducer'
- import moment from 'moment';
- import { DatePicker } from 'antd'
+import { useDispatch, useSelector } from 'react-redux';
+import { createProject, fetchproject, updateProject } from '../../store/reducers/projectReducer';
+import moment from 'moment';
+import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import EditIcon from '@mui/icons-material/Edit';
 function Projet() {
-  const handleNouveauProjetClick = () => {
-    // Handle the click event for "Nouveau projet" button
-    navigate('/stepper');
-    console.log('Nouveau projet clicked');
-  };
-  const {data} = useSelector(state=>state.project)
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [date,setDate]=useState()
-  useEffect(()=>{
-    dispatch(fetchproject())
-       },[dispatch])
 
-       const columns = [
-        { field: 'id', headerName: 'ID',width:150 },
-        { field: 'name', headerName: 'Nom project' ,width:150},
-        { field: 'createdAt', headerName: 'Date de creation',valueGetter: (value, row) => moment(row.createdAt).format('YYYY-MM-DD'),width:150},
-        {
-          field: 'status',
-          headerName: 'status'
-          ,width:150
-        },
-        { field: 'steps', headerName: 'steps',width:150 },
-      ];
-    
-    const user=JSON.parse(window.localStorage.getItem('user'))
-    const onChange = (date, dateString) => {
-      console.log(date, dateString);
-    };
+  const { data, status, error } = useSelector((state) => state.project);
+
+  const handleNouveauProjetClick = () => {
+    dispatch(createProject({}))
+      .then(() => {
+        navigate('/stepper');
+        console.log('Nouveau projet created');
+      })
+      .catch((error) => {
+        console.error('Error creating project:', error);
+      });
+  };
+
+  useEffect(() => {
+    dispatch(fetchproject());
+  }, [dispatch]);
+
+  const handleEditCellChange = (params) => {
+    const { id, field, value } = params;
+    // Dispatch action to update project with new data
+    dispatch(updateProject({ id, [field]: value }))
+      .then(() => {
+        console.log('Project updated successfully');
+      })
+      .catch((error) => {
+        console.error('Error updating project:', error);
+      });
+  };
+
+  const handleDeleteProject = (id) => {
+    console.log('Project deleted:', id);
+    // Implement logic to delete project
+  };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 150 },
+    {
+      field: 'name',
+      headerName: 'Nom projet',
+      width: 200,
+      editable: true
+    },
+
+    {
+      field: 'createdAt',
+      headerName: 'Date de creation',
+      valueGetter: (value, row) => moment(row.createdAt).format('YYYY-MM-DD'),
+      width: 150
+    },
+    {
+      field: 'status',
+      headerName: 'Statut',
+      width: 150
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      flex: 1,
+      renderCell: (params) => (
+        <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
+          {params.row.status === 'Ebauche' && (
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/projet/' + params.row.id)}
+              sx={{
+                marginRight: '10px',
+                borderRadius: '20px',
+                backgroundColor: 'white',
+                color: '#12cc04',
+                border: '1px solid #12cc04',
+                '&:hover': {
+                  backgroundColor: '#12cc04',
+                  color: 'white',
+                  border: '1px solid white'
+                }
+              }}
+              startIcon={<ArrowRightIcon />}
+            >
+              Répondre
+            </Button>
+          )}
+          {params.row.status === 'Prêt' && (
+            <Button
+              variant="outlined"
+              sx={{
+                marginRight: '10px',
+                borderRadius: '20px',
+                backgroundColor: 'white',
+                color: '#12cc04',
+                border: '1px solid #12cc04',
+                '&:hover': {
+                  backgroundColor: '#12cc04',
+                  color: 'white',
+                  border: '1px solid white'
+                }
+              }}
+              startIcon={<CheckIcon />}
+            >
+              Résultat
+            </Button>
+          )}
+
+          {params.row.status === 'Prêt' && (
+            <Button
+              sx={{
+                marginRight: '10px',
+                borderRadius: '20px',
+                backgroundColor: 'white',
+                color: '#C1B100',
+                border: '1px solid #C1B100',
+                '&:hover': {
+                  backgroundColor: '#C1B100',
+                  color: 'white',
+                  border: '1px solid white'
+                }
+              }}
+              variant="outlined"
+              startIcon={<EditIcon />}
+            >
+              Editer
+            </Button>
+          )}
+          <DeleteIcon sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleDeleteProject(params.id)} />
+        </div>
+      )
+    }
+  ];
+
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
+  };
+
   return (
     <MainCard>
-      <Typography variant="h3">Projet</Typography>
+      <Typography variant="h3">Projets</Typography>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button
           onClick={handleNouveauProjetClick}
@@ -52,8 +169,7 @@ function Projet() {
         </Button>
         <DatePicker onChange={onChange} />
       </div>
-
-      <DataGrid autoHeight sx={{ width: '99%',margin:"auto" }} rows={data.filter((item)=>item.id===user?.id)} columns={columns} />
+      <DataGrid onEditCellChange={handleEditCellChange} autoHeight sx={{ width: '99%', margin: 'auto' }} rows={data} columns={columns} />
     </MainCard>
   );
 }

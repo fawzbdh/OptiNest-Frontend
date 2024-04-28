@@ -6,7 +6,7 @@ import projetSuivi from './projetsuivi';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [projet, pages,projetSuivi]
+  items: [projet, pages, projetSuivi]
 };
 
 export default menuItems;

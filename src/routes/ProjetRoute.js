@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import ProjetSuivi from 'pages/projet/Projetsuivi';
+import ProjetById from 'pages/projet/ProjetById';
 
 // render - dashboard
 
@@ -27,8 +28,12 @@ const ProjetRoute = {
       path: 'Projet',
       children: [
         {
-          path: 'default',
+          path: '',
           element: <Projet />
+        },
+        {
+          path: ':projectId',
+          element: <ProjetById />
         },
         {
           path: 'suivi',

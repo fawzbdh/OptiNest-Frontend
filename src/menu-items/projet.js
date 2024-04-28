@@ -17,7 +17,7 @@ const projet = {
       id: 'projet',
       title: 'Projets',
       type: 'item',
-      url: '/projet/default',
+      url: '/projet',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     }

@@ -24,6 +24,7 @@ import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import Logo from 'assets/images/icons/logo.png';
 
 function AuthLogin() {
   // Initial state values for email, password, and "save session" checkbox
@@ -45,9 +46,9 @@ function AuthLogin() {
       });
 
       // If login successful, save access token to local storage
-      console.log(response.data)
+      console.log(response.data);
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.data))
+      localStorage.setItem('user', JSON.stringify(response.data.data));
 
       // Reset form
       setSubmitting(false);
@@ -115,7 +116,7 @@ function AuthLogin() {
     <div
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(to bottom left, #222C60, #FFFFFF)', // Change direction to bottom left
+        background: 'linear-gradient(to left, #12cc04, #42b603,#a4f678, #FFFFFF)', // Change direction to bottom left
         color: '#fff',
         display: 'flex',
         justifyContent: 'center',
@@ -139,8 +140,7 @@ function AuthLogin() {
             <Grid item xs={12} md={6}>
               <Box display={'flex'} justifyContent="center" flexDirection={'column'} alignItems={'center'}>
                 <Box sx={{ mr: 10, ml: 10, alignSelf: 'flex-start' }}>
-                  {/* <img src={Logo} alt="logo" /> */}
-                  <h1>LOGO</h1>
+                  <img src={Logo} alt="logo" />
                 </Box>
                 <Box sx={{ mr: 10, ml: 10, alignSelf: 'flex-start' }}>
                   <Typography
@@ -154,7 +154,7 @@ function AuthLogin() {
                     variant="body1"
                     gutterBottom
                   >
-                    slagon
+                    Découpez avec ingéniosité, optimisez chaque millimètre
                   </Typography>
                 </Box>
               </Box>
@@ -320,8 +320,12 @@ function AuthLogin() {
                               fontSize: '16px',
                               lineHeight: '24px',
                               color: '#FFFFFF',
-                              backgroundColor: '#222C60',
-                              width: '150px'
+                              backgroundColor: '#0A8401',
+                              width: '150px',
+                              '&:hover': {
+                                backgroundColor: '#0A8401',
+                                opacity: 0.8
+                              }
                             }}
                           >
                             Se connecter
@@ -340,7 +344,7 @@ function AuthLogin() {
                             }}
                           >
                             Vous avez déjà un compte?{' '}
-                            <Link href="#" component={RouterLink} underline="always">
+                            <Link href="#" component={RouterLink} underline="always" sx={{ color: '#0A8401' }}>
                               Se connecter
                             </Link>
                           </Typography>

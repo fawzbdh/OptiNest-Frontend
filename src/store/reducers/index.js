@@ -8,6 +8,6 @@ import project from './projectReducer';
 
 // ==============================|| COMBINE REDUCERS ||============================== //
 
-const reducers = combineReducers({ menu, user,project });
+const reducers = combineReducers({ menu, user, project });
 
 export default reducers;
