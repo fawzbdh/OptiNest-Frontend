@@ -2,18 +2,17 @@ import MainCard from 'components/MainCard';
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import { Steps } from 'antd';
-import TextField from '@mui/material/TextField';
-import Preparer from 'pages/preparer/Preparer';
 import Couper from 'pages/couper/Couper';
 import Placer from 'pages/placer/Placer';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './Breadcrumb.css';
 import { useNavigate } from 'react-router-dom';
+import ImporterFiles from 'pages/preparer/ImporterFiles';
 
 function StepperPage() {
-  const [current, setCurrent] = useState(0); // Start from 1
-  const totalSteps = 3; // Total number of steps/pages
+  const [current, setCurrent] = useState(0); // Start from 0
+  const totalSteps = 4; // Total number of steps/pages
   const navigate = useNavigate();
 
   const onChange = (value) => {
@@ -22,20 +21,16 @@ function StepperPage() {
   };
 
   const handleNext = () => {
-    setCurrent((prevCurrent) => Math.min(prevCurrent + 1, totalSteps));
+    setCurrent((prevCurrent) => Math.min(prevCurrent + 1, totalSteps - 1)); // Ensure not to exceed the total steps
   };
 
   const handlePrev = () => {
-    setCurrent((prevCurrent) => Math.max(prevCurrent - 1, 1)); // Minimum step 1
+    setCurrent((prevCurrent) => Math.max(prevCurrent - 1, 0)); // Ensure not to go below zero
   };
 
   return (
     <MainCard>
       <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ width: '40%' }}>
-          {' '}
-          <TextField label="Nom du projet" variant="outlined" style={{ marginBottom: '20px' }} fullWidth />
-        </div>
         <Steps
           type="navigation"
           size="small"
@@ -58,14 +53,12 @@ function StepperPage() {
           ]}
         />
       </div>
-      {current === 0 && <Preparer />}
+      {current === 0 && <ImporterFiles />}
       {current === 1 && (
         <div>
-          {' '}
-          <p>second page</p>{' '}
+          <p>second page</p>
         </div>
       )}
-
       {current === 2 && <Placer />}
       {current === 3 && <Couper />}
 
@@ -80,7 +73,7 @@ function StepperPage() {
           </Button>
         )}
 
-        <Button style={{ width: '50%' }} variant="contained" onClick={handleNext} disabled={current >= totalSteps - 1}>
+        <Button style={{ width: '50%' }} variant="contained" onClick={handleNext} disabled={current === totalSteps - 1}>
           Suivant
         </Button>
       </div>

@@ -18,6 +18,21 @@ export const fetchproject = createAsyncThunk('project/fetchproject', async (_, t
     return rejectWithValue(error.message);
   }
 });
+export const fetchProjectById = createAsyncThunk('project/fetchProjectById', async (projectId, thunkAPI) => {
+  const { rejectWithValue } = thunkAPI;
+  try {
+    const token = localStorage.getItem('token');
+    const res = await axios.get(`${baseURL}/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = res.data.data;
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 export const createProject = createAsyncThunk('project/createProject', async (projectData, thunkAPI) => {
   const { rejectWithValue } = thunkAPI;
@@ -51,12 +66,29 @@ export const updateProject = createAsyncThunk('project/updateProject', async ({ 
     return rejectWithValue(error.message);
   }
 });
+export const deleteProject = createAsyncThunk('project/deleteProject', async (projectId, thunkAPI) => {
+  const { rejectWithValue } = thunkAPI;
+  try {
+    const token = localStorage.getItem('token');
+    // Send a DELETE request to the server to delete the project
+    await axios.delete(`${baseURL}/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    // Return the deleted project ID as the result
+    return projectId;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 export const projectSlice = createSlice({
   name: 'project',
   initialState: {
     data: [],
     getalldata: [],
+    selectedProject: null,
     status: null,
     error: null
   },
@@ -107,6 +139,33 @@ export const projectSlice = createSlice({
         state.error = null;
       })
       .addCase(updateProject.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(fetchProjectById.fulfilled, (state, action) => {
+        state.selectedProject = action.payload;
+        state.status = 'success';
+        state.error = null;
+      })
+      .addCase(fetchProjectById.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchProjectById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(deleteProject.fulfilled, (state, action) => {
+        // Remove the deleted project from the state
+        state.data = state.data.filter((project) => project.id !== action.payload);
+        state.status = 'success';
+        state.error = null;
+      })
+      .addCase(deleteProject.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(deleteProject.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });

@@ -6,18 +6,23 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import FileList from './FileList';
+import PropTypes from 'prop-types';
+import TextField from '@mui/material/TextField';
+import { useSelector } from 'react-redux';
 
-function Preparer() {
+function ImporterFiles({ handleFileSelect }) {
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-
-  const handleFileSelect = (event) => {
+  const { selectedProject, status } = useSelector((state) => state.project);
+  const handleFileChange = (event) => {
     const files = event.target.files;
     const fileArray = Array.from(files);
     // Update uploaded files count based on the number of selected files
     setUploadedFilesCount(fileArray.length);
     // Update uploaded files array
     setUploadedFiles(fileArray);
+    // Call the parent component's handleFileSelect function to update the count
+    handleFileSelect(fileArray);
   };
 
   const handleDragOver = (event) => {
@@ -32,6 +37,8 @@ function Preparer() {
     setUploadedFilesCount(fileArray.length);
     // Update uploaded files array
     setUploadedFiles(fileArray);
+    // Call the parent component's handleFileSelect function to update the count
+    handleFileSelect(fileArray);
   };
 
   const handleRemoveFile = (index) => {
@@ -39,22 +46,38 @@ function Preparer() {
     newFiles.splice(index, 1);
     setUploadedFiles(newFiles);
     setUploadedFilesCount(newFiles.length);
+    // Call the parent component's handleFileSelect function to update the count
+    handleFileSelect(newFiles);
   };
+  if (status === 'loading') {
+    return (
+      <Typography style={{ marginTop: '20px', marginRight: '20px' }} variant="h4">
+        Veuillez patienter...
+      </Typography>
+    );
+  }
+
   return (
     <div>
       <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
-        <Typography style={{ marginTop: '20px', marginRight: '20px' }} variant="h4">
-          Télécharger vos pièces
-        </Typography>
+        <div style={{ width: '40%' }}>
+          <TextField
+            label="Nom du projet"
+            variant="outlined"
+            style={{ marginBottom: '20px' }}
+            value={selectedProject?.name || ''}
+            fullWidth
+          />
+        </div>
       </div>
-
+      <Typography style={{ marginTop: '20px', marginRight: '20px' }} variant="h4">
+        Télécharger vos pièces
+      </Typography>
       <div style={{ marginTop: '40px' }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <div onDragOver={handleDragOver} onDrop={handleDrop}>
-              <input id="file-input" type="file" style={{ display: 'none' }} onChange={handleFileSelect} multiple />
-              <>{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}</>
-
+              <input id="file-input" type="file" style={{ display: 'none' }} onChange={handleFileChange} multiple />
               <label
                 htmlFor="file-input"
                 style={{
@@ -124,7 +147,10 @@ function Preparer() {
                 <div style={{ backgroundColor: '#F5F5F5', width: '100%', height: '70px', margin: '0px', padding: '0px' }}>
                   <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
                     <Chip sx={{ marginRight: '10px', borderRadius: '20px' }} label={`${uploadedFilesCount} en cours`} />
-                    <Chip sx={{ marginRight: '10px', borderRadius: '20px', backgroundColor: '#D5F3B3' }} label="0 téléchargé(s)" />
+                    <Chip
+                      sx={{ marginRight: '10px', borderRadius: '20px', backgroundColor: '#D5F3B3' }}
+                      label={`${selectedProject?.fileCount} téléchargé(s)`}
+                    />
                   </div>
                 </div>
                 <div style={{ padding: '20px' }}>
@@ -138,5 +164,7 @@ function Preparer() {
     </div>
   );
 }
-
-export default Preparer;
+ImporterFiles.propTypes = {
+  handleFileSelect: PropTypes.func.isRequired
+};
+export default ImporterFiles;

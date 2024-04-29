@@ -87,7 +87,9 @@ function Projet() {
           {params.row.status === 'Ebauche' && (
             <Button
               variant="outlined"
-              onClick={() => navigate('/projet/' + params.row.id)}
+              onClick={() => {
+                navigate('/projet/' + params.row.id);
+              }}
               sx={{
                 marginRight: '10px',
                 borderRadius: '20px',
