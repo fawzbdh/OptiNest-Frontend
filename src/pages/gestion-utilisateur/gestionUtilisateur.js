@@ -125,7 +125,7 @@ function GestionUtilisateurs() {
             </Box>
             <Box p={2} width="100%">
               <Grid container spacing={2}>
-                <Grid item xs={6}>
+                <Grid item    xs={6}>
                   <TextField
                     label="Nom utilisateur"
                     name="username"

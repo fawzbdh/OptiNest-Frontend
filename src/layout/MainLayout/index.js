@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet,Navigate } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
@@ -43,22 +43,20 @@ const MainLayout = () => {
     if (open !== drawerOpen) setOpen(drawerOpen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawerOpen]);
-  const user=JSON.parse(window.localStorage.getItem('user'));
-  const token=window.localStorage.getItem('token')
+  const user = JSON.parse(window.localStorage.getItem('user'));
+  const token = window.localStorage.getItem('token');
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
       <Header open={open} handleDrawerToggle={handleDrawerToggle} />
-     {user?.role==="admin" &&<Drawer open={open} handleDrawerToggle={handleDrawerToggle} />}
+      {user?.role === 'admin' && <Drawer open={open} handleDrawerToggle={handleDrawerToggle} />}
       <Box component="main" sx={{ width: '100%', flexGrow: 1, p: { xs: 2, sm: 3 } }}>
         <Toolbar />
         <Breadcrumbs navigation={navigation} title />
-        {token ? <Outlet /> : <Navigate to="/login" replace/>}
+        {token ? <Outlet /> : <Navigate to="/login" replace />}
       </Box>
     </Box>
   );
 };
 
 export default MainLayout;
-
-

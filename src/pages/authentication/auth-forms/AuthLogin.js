@@ -11,7 +11,6 @@ import {
   InputAdornment,
   FormControlLabel,
   Checkbox,
-  Link,
   Stack,
   FormHelperText
 } from '@mui/material';
@@ -21,7 +20,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Logo from 'assets/images/icons/logo.png';
@@ -330,24 +328,6 @@ function AuthLogin() {
                           >
                             Se connecter
                           </Button>
-                        </Grid>
-
-                        <Grid item>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              fontSize: '12px',
-                              lineHeight: '24px',
-                              color: '#333333'
-                            }}
-                          >
-                            Vous avez déjà un compte?{' '}
-                            <Link href="#" component={RouterLink} underline="always" sx={{ color: '#0A8401' }}>
-                              Se connecter
-                            </Link>
-                          </Typography>
                         </Grid>
                       </Grid>
                     </CardContent>

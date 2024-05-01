@@ -2,9 +2,9 @@ import { lazy } from 'react';
 
 // project import
 import Loadable from 'components/Loadable';
-import MainLayout from 'layout/MainLayout';
 import ProjetSuivi from 'pages/projet/Projetsuivi';
 import ProjetById from 'pages/projet/ProjetById';
+import ProtectedRoutes from './ProtectedRoutes';
 
 // render - dashboard
 
@@ -17,7 +17,7 @@ const Projet = Loadable(lazy(() => import('pages/projet/Projet')));
 
 const ProjetRoute = {
   path: '/',
-  element: <MainLayout />,
+  element: <ProtectedRoutes />,
   children: [
     {
       path: '/',
