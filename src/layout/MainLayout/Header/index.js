@@ -21,12 +21,11 @@ const Header = ({ open, handleDrawerToggle }) => {
   // const iconBackColorOpen = 'grey.200';
 
   // common header
-  const user=JSON.parse(window.localStorage.getItem('user'));
-
+  const user = JSON.parse(window.localStorage.getItem('user'));
 
   const mainHeader = (
-    <Toolbar style={{width:"100%"}}>
-      {!open &&  user?.role==="admin" && (
+    <Toolbar style={{ width: '100%' }}>
+      {!open && user?.role === 'admin' && (
         <IconButton
           disableRipple
           aria-label="open drawer"
@@ -35,7 +34,7 @@ const Header = ({ open, handleDrawerToggle }) => {
           color="secondary"
           sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: -2 } }}
         >
-          {!open &&  user?.role==="admin" && <MenuUnfoldOutlined />}
+          {!open && user?.role === 'admin' && <MenuUnfoldOutlined />}
         </IconButton>
       )}
       <HeaderContent />
