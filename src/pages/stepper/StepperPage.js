@@ -14,7 +14,7 @@ import DoneIcon from '@mui/icons-material/Done';
 
 function StepperPage() {
   const [current, setCurrent] = useState(0); // Start from 0
-  const [edit, setEdit] = useState(false); 
+  const [edit, setEdit] = useState(false);
   const totalSteps = 4; // Total number of steps/pages
   const navigate = useNavigate();
 
@@ -30,44 +30,44 @@ function StepperPage() {
   const handlePrev = () => {
     setCurrent((prevCurrent) => Math.max(prevCurrent - 1, 0)); // Ensure not to go below zero
   };
-  let datafichier= [
+  let datafichier = [
     {
-        priority: 0,
-        id: 1,
-        ProjectId: 1,
-        name: "Pièce7.DXF",
-        path: "http://localhost:8000/uploads/3cad7619-5898-46d2-91d7-8a4ce0f9b7ff.png",
-        width: 281.7766171199702,
-        height: 384.60095085407016,
-        quantity: 1,
-        updatedAt: "2024-05-02T21:30:32.617Z",
-        createdAt: "2024-05-02T21:30:32.617Z"
+      priority: 0,
+      id: 1,
+      ProjectId: 1,
+      name: 'Pièce7.DXF',
+      path: 'http://localhost:8000/uploads/3cad7619-5898-46d2-91d7-8a4ce0f9b7ff.png',
+      width: 281.7766171199702,
+      height: 384.60095085407016,
+      quantity: 1,
+      updatedAt: '2024-05-02T21:30:32.617Z',
+      createdAt: '2024-05-02T21:30:32.617Z'
     },
     {
       priority: 0,
       id: 1,
       ProjectId: 1,
-      name: "Pièce7.DXF",
-      path: "http://localhost:8000/uploads/3cad7619-5898-46d2-91d7-8a4ce0f9b7ff.png",
+      name: 'Pièce7.DXF',
+      path: 'http://localhost:8000/uploads/3cad7619-5898-46d2-91d7-8a4ce0f9b7ff.png',
       width: 281.7766171199702,
       height: 384.60095085407016,
       quantity: 1,
-      updatedAt: "2024-05-02T21:30:32.617Z",
-      createdAt: "2024-05-02T21:30:32.617Z"
-  },
-  {
-    priority: 0,
-    id: 1,
-    ProjectId: 1,
-    name: "Pièce7.DXF",
-    path: "http://localhost:8000/uploads/3cad7619-5898-46d2-91d7-8a4ce0f9b7ff.png",
-    width: 281.7766171199702,
-    height: 384.60095085407016,
-    quantity: 1,
-    updatedAt: "2024-05-02T21:30:32.617Z",
-    createdAt: "2024-05-02T21:30:32.617Z"
-}
-]
+      updatedAt: '2024-05-02T21:30:32.617Z',
+      createdAt: '2024-05-02T21:30:32.617Z'
+    },
+    {
+      priority: 0,
+      id: 1,
+      ProjectId: 1,
+      name: 'Pièce7.DXF',
+      path: 'http://localhost:8000/uploads/3cad7619-5898-46d2-91d7-8a4ce0f9b7ff.png',
+      width: 281.7766171199702,
+      height: 384.60095085407016,
+      quantity: 1,
+      updatedAt: '2024-05-02T21:30:32.617Z',
+      createdAt: '2024-05-02T21:30:32.617Z'
+    }
+  ];
   return (
     <MainCard>
       <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column' }}>
@@ -95,38 +95,85 @@ function StepperPage() {
       </div>
       {current === 0 && <ImporterFiles />}
       {current === 1 && (
-        <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(5, 1fr)" ,gap:"10px",borderBottom:"1px solid gray"}}>
-            <p style={{fontSize:"18px",fontWeight:"700"}}>Image</p>
-            <p style={{fontSize:"18px",fontWeight:"700"}}>Quantite</p>
-            <p style={{fontSize:"18px",fontWeight:"700"}}>width</p>
-            <p style={{fontSize:"18px",fontWeight:"700"}}>height</p>
-            <p style={{fontSize:"18px",fontWeight:"700"}}>priority</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', borderBottom: '1px solid gray' }}>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>Image</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>Quantite</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>width</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>height</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>priority</p>
           </div>
-          {
-            datafichier?.map((item,index)=>
-           { let qt=item.quantity
-            console.log(qt)
-           return <div style={{display:"grid",gridTemplateColumns:"repeat(5, 1fr)" ,gap:"10px",alignItems:"center",borderBottom:"1px solid gray"}}>
+          {datafichier?.map((item, index) => {
+            let qt = item.quantity;
+            console.log(qt);
+            return (
+              <div
+                key={index}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(5, 1fr)',
+                  gap: '10px',
+                  alignItems: 'center',
+                  borderBottom: '1px solid gray'
+                }}
+              >
+                <img src={item.path} alt={'image' + 1} style={{ width: '200px', height: '150px' }} />
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
+                  {' '}
+                  <button
+                    onClick={() => datafichier[index].quantity > 0 && datafichier[index].quantity--}
+                    style={{
+                      cursor: 'pointer',
+                      background: 'rgb(18, 204, 4)',
+                      color: 'white',
+                      border: '0',
+                      fontSize: '18px',
+                      borderRadius: '5px',
+                      width: '25px',
+                      height: '25px'
+                    }}
+                  >
+                    -
+                  </button>
+                  <span>{datafichier[index].quantity}</span>
+                  <button
+                    onClick={() => {
+                      console.log(qt, 'ee');
+                      datafichier[index].quantity = datafichier[index].quantity + 1;
+                    }}
+                    style={{
+                      cursor: 'pointer',
+                      background: 'rgb(18, 204, 4)',
+                      color: 'white',
+                      border: '0',
+                      fontSize: '18px',
+                      borderRadius: '5px',
+                      width: '25px',
+                      height: '25px'
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
 
-              <img src={item.path} alt='image' style={{width:"200px",height:"150px"}}/>
-              <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:"10px"}}> <button 
-              onClick={()=>datafichier[index].quantity>0 && datafichier[index].quantity--}
-              style={{cursor:"pointer",background:"rgb(18, 204, 4)",color:"white",border:"0",fontSize:"18px",borderRadius:"5px",width:"25px",height:"25px"}}>-</button>
-              <span>{datafichier[index].quantity}</span><button 
-              onClick={()=>{
-                console.log(qt,"ee")
-                datafichier[index].quantity=datafichier[index].quantity+1}}
-              style={{cursor:"pointer",background:"rgb(18, 204, 4)",color:"white",border:"0",fontSize:"18px",borderRadius:"5px",width:"25px",height:"25px"}}>+</button></div>
-              
-              <div>{item.width}</div>
-              <div>{item.height}</div>
-              <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:"10px"}}> 
-              {edit ?<><span>{item.priority}</span><EditIcon style={{color:'rgb(18, 204, 4)',fontSize:"16px",cursor:"pointer"}} onClick={()=>setEdit(false)}/></>: 
-              <><span>{item.priority}</span><DoneIcon style={{color:'rgb(18, 204, 4)',fontSize:"16px",cursor:"pointer"}} onClick={()=>setEdit(true)}/></>}</div>
-
-            </div>})
-          }
+                <div>{item.width}</div>
+                <div>{item.height}</div>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
+                  {edit ? (
+                    <>
+                      <span>{item.priority}</span>
+                      <EditIcon style={{ color: 'rgb(18, 204, 4)', fontSize: '16px', cursor: 'pointer' }} onClick={() => setEdit(false)} />
+                    </>
+                  ) : (
+                    <>
+                      <span>{item.priority}</span>
+                      <DoneIcon style={{ color: 'rgb(18, 204, 4)', fontSize: '16px', cursor: 'pointer' }} onClick={() => setEdit(true)} />
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
       {current === 2 && <Placer />}

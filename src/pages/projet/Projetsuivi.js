@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchproject } from '../../store/reducers/projectReducer';
+import { fetchProjects } from '../../store/reducers/projectReducer';
 import moment from 'moment';
 import { DatePicker } from 'antd';
 
@@ -13,7 +13,7 @@ function ProjetSuivi() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchproject());
+    dispatch(fetchProjects());
   }, [dispatch]);
 
   const columns = [

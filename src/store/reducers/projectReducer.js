@@ -2,8 +2,22 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const baseURL = 'http://localhost:8000/api/project'; // Define baseURL
-
-export const fetchproject = createAsyncThunk('project/fetchproject', async (_, thunkAPI) => {
+export const fetchProjects = createAsyncThunk('project/fetchProjects', async (_, thunkAPI) => {
+  const { rejectWithValue } = thunkAPI;
+  try {
+    const token = localStorage.getItem('token');
+    const res = await axios.get(`${baseURL}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = res.data.data;
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+export const fetchprojectByUserId = createAsyncThunk('project/fetchprojectbyuserid', async (_, thunkAPI) => {
   const { rejectWithValue } = thunkAPI;
   try {
     const token = localStorage.getItem('token');
@@ -96,17 +110,30 @@ export const projectSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // Fetch projects
-      .addCase(fetchproject.fulfilled, (state, action) => {
+      .addCase(fetchProjects.fulfilled, (state, action) => {
         state.data = action.payload;
         state.status = 'success';
         state.error = null;
       })
-      .addCase(fetchproject.pending, (state) => {
+      .addCase(fetchProjects.pending, (state) => {
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(fetchproject.rejected, (state, action) => {
+      .addCase(fetchProjects.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      // Fetch projects
+      .addCase(fetchprojectByUserId.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.status = 'success';
+        state.error = null;
+      })
+      .addCase(fetchprojectByUserId.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchprojectByUserId.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })

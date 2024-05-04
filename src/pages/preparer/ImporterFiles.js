@@ -10,9 +10,11 @@ import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux';
 
-function ImporterFiles({ handleFileSelect }) {
+function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProjectName }) {
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [projectName, setProjectName] = useState('');
+
   const { selectedProject, status } = useSelector((state) => state.project);
   const handleFileChange = (event) => {
     const files = event.target.files;
@@ -22,13 +24,17 @@ function ImporterFiles({ handleFileSelect }) {
     // Update uploaded files array
     setUploadedFiles(fileArray);
     // Call the parent component's handleFileSelect function to update the count
+
     handleFileSelect(fileArray);
+    handleUploadedFiles(fileArray);
   };
 
   const handleDragOver = (event) => {
     event.preventDefault();
   };
-
+  const handleUpdateName = () => {
+    handleUpdateProjectName(projectName);
+  };
   const handleDrop = (event) => {
     event.preventDefault();
     const files = event.dataTransfer.files;
@@ -59,16 +65,27 @@ function ImporterFiles({ handleFileSelect }) {
 
   return (
     <div>
-      <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
+      <div
+        style={{
+          marginBottom: '20px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          alignContent: 'center'
+        }}
+      >
         <div style={{ width: '40%' }}>
           <TextField
             label="Nom du projet"
             variant="outlined"
-            style={{ marginBottom: '20px' }}
-            value={selectedProject?.name || ''}
+            value={projectName || selectedProject?.name || ''}
+            onChange={(e) => setProjectName(e.target.value)}
             fullWidth
           />
         </div>
+        <Button variant="contained" style={{ marginLeft: '20px' }} onClick={handleUpdateName}>
+          Mettre à jour
+        </Button>
       </div>
       <Typography style={{ marginTop: '20px', marginRight: '20px' }} variant="h4">
         Télécharger vos pièces
@@ -165,6 +182,8 @@ function ImporterFiles({ handleFileSelect }) {
   );
 }
 ImporterFiles.propTypes = {
-  handleFileSelect: PropTypes.func.isRequired
+  handleFileSelect: PropTypes.func.isRequired,
+  handleUploadedFiles: PropTypes.func.isRequired,
+  handleUpdateProjectName: PropTypes.func.isRequired
 };
 export default ImporterFiles;

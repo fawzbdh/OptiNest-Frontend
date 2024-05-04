@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MainCard from 'components/MainCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProject, fetchproject, updateProject } from '../../store/reducers/projectReducer';
+import { createProject, fetchprojectByUserId, updateProject } from '../../store/reducers/projectReducer';
 import moment from 'moment';
 import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -19,10 +19,12 @@ function Projet() {
   const { data, status, error } = useSelector((state) => state.project);
 
   const handleNouveauProjetClick = () => {
-    dispatch(createProject({}))
-      .then(() => {
-        navigate('/stepper');
-        console.log('Nouveau projet created');
+    dispatch(createProject({})) // Dispatch the createProject action
+      .then((data) => {
+        console.log('Response data:', data); // Log the response data to see its structure
+        const projectId = data.payload.id; // Access the ID from the data
+        navigate(`/projet/${projectId}`); // Navigate to the project details page with the ID
+        console.log('Nouveau projet created', projectId);
       })
       .catch((error) => {
         console.error('Error creating project:', error);
@@ -30,7 +32,7 @@ function Projet() {
   };
 
   useEffect(() => {
-    dispatch(fetchproject());
+    dispatch(fetchprojectByUserId());
   }, [dispatch]);
 
   const handleEditCellChange = (params) => {
@@ -55,6 +57,9 @@ function Projet() {
   }
 
   if (status === 'failed') {
+    if (error === 'Request failed with status code 401') {
+      return navigate('/login');
+    }
     return <div>Error: {error}</div>;
   }
 

@@ -2,14 +2,15 @@ import PropTypes from 'prop-types';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { AppBar, IconButton, Toolbar, useMediaQuery } from '@mui/material';
+import { AppBar, Box, IconButton, Toolbar, useMediaQuery } from '@mui/material';
 
 // project import
 import AppBarStyled from './AppBarStyled';
-import HeaderContent from './HeaderContent';
 
 // assets
-import { MenuUnfoldOutlined } from '@ant-design/icons';
+import { MenuUnfoldOutlined, LogoutOutlined } from '@ant-design/icons';
+import Logo from 'assets/images/icons/logo.png';
+import { useNavigate } from 'react-router-dom';
 
 // ==============================|| MAIN LAYOUT - HEADER ||============================== //
 
@@ -17,11 +18,17 @@ const Header = ({ open, handleDrawerToggle }) => {
   const theme = useTheme();
   const matchDownMD = useMediaQuery(theme.breakpoints.down('lg'));
 
+  const navigate = useNavigate();
+
   const iconBackColor = 'grey.100';
   // const iconBackColorOpen = 'grey.200';
 
   // common header
   const user = JSON.parse(window.localStorage.getItem('user'));
+  const logOut = () => {
+    window.localStorage.clear();
+    navigate('/login');
+  };
 
   const mainHeader = (
     <Toolbar style={{ width: '100%' }}>
@@ -37,7 +44,23 @@ const Header = ({ open, handleDrawerToggle }) => {
           {!open && user?.role === 'admin' && <MenuUnfoldOutlined />}
         </IconButton>
       )}
-      <HeaderContent />
+      {user?.role !== 'admin' && (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <Box onClick={() => navigate('/projet')}>
+            <img src={Logo} alt="logo" style={{ maxWidth: 200 }} />
+          </Box>
+          <IconButton sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: 2 } }} onClick={() => logOut()}>
+            <LogoutOutlined />
+          </IconButton>
+        </Box>
+      )}
+      {user?.role === 'admin' && (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
+          <IconButton sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: 2 } }} onClick={() => logOut()}>
+            <LogoutOutlined />
+          </IconButton>
+        </Box>
+      )}
     </Toolbar>
   );
 

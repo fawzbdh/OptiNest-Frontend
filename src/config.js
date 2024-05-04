@@ -10,9 +10,10 @@ const config = {
   presetColor: 'default',
   themeDirection: 'ltr'
 };
+const user = JSON.parse(window.localStorage.getItem('user'));
 
 export default config;
-export const drawerWidth = 260;
+export const drawerWidth = user?.role !== 'admin' ? 0 : 260;
 
 export const twitterColor = '#1DA1F2';
 export const facebookColor = '#3b5998';
