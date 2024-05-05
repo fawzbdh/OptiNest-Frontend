@@ -22,36 +22,67 @@ import circleUser from 'assets/images/icons/circle-user.png';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteItem from 'components/delete/delete';
 import { useDispatch } from 'react-redux';
-import { fetchUser, updateUser } from 'utils/usersApi';
+import Swal from 'sweetalert2';
+import { updateUser } from 'store/reducers/authSlice';
 
 function UserCards({ users }) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
   const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false);
+  const [userColors, setUserColors] = useState({});
+
   const toggleDeleteDrawer = () => {
     setDeleteDrawerOpen(!deleteDrawerOpen);
   };
+
   const dispatch = useDispatch();
+
   const toggleDrawer = (user) => {
+    console.log(user);
     setSelectedUser(user);
     setOpenDrawer(!openDrawer);
   };
 
   const handleSubmit = (values) => {
     console.log('Values:', values);
-    dispatch(updateUser(selectedUser.id, values));
-    dispatch(fetchUser());
+    dispatch(updateUser({ userId: selectedUser.id, userData: values }))
+      .unwrap()
+      .then((data) => {
+        console.log('Données de sélection :', data);
+        setOpenDrawer(false);
+        Swal.fire('Succès', 'Utilisateur mis à jour', 'success');
+      })
+      .catch((error) => {
+        let errorMessage = 'Une erreur est survenue'; // Default error message
 
-    setOpenDrawer(false);
+        // Check if the error object has errors array and extract the error message
+        if (error.errors && error.errors.length > 0) {
+          errorMessage = error.errors[0].msg;
+        }
+        if (error.message) {
+          // If the error has a response and data, extract the error message
+          errorMessage = error.message;
+        }
+
+        Swal.fire('Erreur', errorMessage, 'error');
+      });
   };
 
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+  const handleDelete = () => {
+    toggleDeleteDrawer();
+    toggleDrawer(selectedUser);
+  };
+
+  const getRandomColor = (userId) => {
+    if (!userColors[userId]) {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      setUserColors((prevColors) => ({ ...prevColors, [userId]: color }));
     }
-    return color;
+    return userColors[userId];
   };
 
   return (
@@ -67,7 +98,7 @@ function UserCards({ users }) {
                       sx={{
                         height: '80px',
                         width: '80px',
-                        backgroundColor: getRandomColor(),
+                        backgroundColor: getRandomColor(user.id),
                         color: '#fff'
                       }}
                     >
@@ -128,7 +159,7 @@ function UserCards({ users }) {
                       sx={{
                         height: '70px',
                         width: '70px',
-                        backgroundColor: getRandomColor(),
+                        backgroundColor: getRandomColor(selectedUser.id),
                         color: '#fff'
                       }}
                     >
@@ -140,12 +171,7 @@ function UserCards({ users }) {
                     </div>
                   </div>
                   <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
-                    <Button
-                      style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
-                      type="submit"
-                      variant="outlined"
-                      onClick={() => handleSubmit()}
-                    >
+                    <Button style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }} type="submit" variant="outlined">
                       Modifier
                     </Button>
                     <Box mr={2}></Box>
@@ -164,27 +190,23 @@ function UserCards({ users }) {
                   <Grid item xs={6}>
                     <TextField
                       name="username"
-                      variant="filled"
                       type="text"
                       label="Nom d'utilisateur"
                       fullWidth
                       margin="normal"
                       value={values.username}
                       onChange={handleChange}
-                      InputProps={{ disableUnderline: true }}
                     />
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
                       name="email"
-                      variant="filled"
                       type="text"
                       label="Email"
                       fullWidth
                       margin="normal"
                       value={values.email}
                       onChange={handleChange}
-                      InputProps={{ disableUnderline: true }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -223,7 +245,14 @@ function UserCards({ users }) {
         }}
       >
         <Box sx={{ width: '100%', p: 2 }}>
-          <DeleteItem toggleDrawer={toggleDrawer} selectedUser={selectedUser} toggleDeleteDrawer={toggleDeleteDrawer} />
+          {selectedUser && (
+            <DeleteItem
+              toggleDeleteDrawer={toggleDeleteDrawer}
+              toggleDrawer={toggleDrawer}
+              selectedUser={selectedUser}
+              onDelete={handleDelete}
+            />
+          )}{' '}
         </Box>
       </Drawer>
     </Grid>

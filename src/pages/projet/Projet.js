@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MainCard from 'components/MainCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProject, fetchprojectByUserId, updateProject } from '../../store/reducers/projectReducer';
+import { createProject, deleteProject, fetchprojectByUserId, updateProject } from '../../store/reducers/projectReducer';
 import moment from 'moment';
 import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -12,11 +12,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
+import Swal from 'sweetalert2';
 function Projet() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data, status, error } = useSelector((state) => state.project);
+  const { projects, loading, error } = useSelector((state) => state.project);
 
   const handleNouveauProjetClick = () => {
     dispatch(createProject({})) // Dispatch the createProject action
@@ -48,21 +49,47 @@ function Projet() {
   };
 
   const handleDeleteProject = (id) => {
-    console.log('Project deleted:', id);
-    // Implement logic to delete project
+    Swal.fire({
+      title: 'Confirmation',
+      text: 'Êtes-vous sûr de vouloir supprimer ce projet ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimer !'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log('Projet supprimé :', id);
+        // Dispatch deleteProject action
+        dispatch(deleteProject(id))
+          .unwrap()
+          .then((data) => {
+            console.log('Projet supprimé :', data);
+            // Handle success
+            Swal.fire('Succès', 'Projet supprimé avec succès !', 'success');
+          })
+          .catch((error) => {
+            // Handle error
+            let errorMessage = 'Une erreur est survenue lors de la suppression du projet.';
+            if (error.errors && error.errors.length > 0) {
+              errorMessage = error.errors[0].msg;
+            }
+            if (error.message) {
+              errorMessage = error.message;
+            }
+            Swal.fire('Erreur', errorMessage, 'error');
+          });
+      }
+    });
   };
 
-  if (status === 'loading') {
+  if (loading === true) {
     return <div>Loading...</div>;
   }
 
-  if (status === 'failed') {
-    if (error === 'Request failed with status code 401') {
-      return navigate('/login');
-    }
-    return <div>Error: {error}</div>;
+  if (error === 'Request failed with status code 401') {
+    return navigate('/login');
   }
-
   const columns = [
     { field: 'id', headerName: 'ID', width: 150 },
     {
@@ -176,7 +203,13 @@ function Projet() {
         </Button>
         <DatePicker onChange={onChange} />
       </div>
-      <DataGrid onEditCellChange={handleEditCellChange} autoHeight sx={{ width: '99%', margin: 'auto' }} rows={data} columns={columns} />
+      <DataGrid
+        onEditCellChange={handleEditCellChange}
+        autoHeight
+        sx={{ width: '99%', margin: 'auto' }}
+        rows={projects}
+        columns={columns}
+      />
     </MainCard>
   );
 }

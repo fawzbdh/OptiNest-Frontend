@@ -1,39 +1,21 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createUser, fetchUser } from 'utils/usersApi';
 import { Box, Button, TextField, Drawer, Grid, Typography, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-
 import Swal from 'sweetalert2';
 import DashboardHeader from './title';
 import UserCards from './userCards';
 import MainCard from 'components/MainCard';
+import { fetchUsers, signupUser } from 'store/reducers/authSlice';
 
 function GestionUtilisateurs() {
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
+  const { users } = useSelector((state) => state.auth);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  const [isEditDrawerOpen, setIsEditDrawerOpen] = React.useState(false);
-  const [selectedUser, setSelectedUser] = React.useState({});
-
-  const [newUser, setNewUser] = React.useState({ username: '', email: '', role: '' });
-  const handleAddUser = () => {
-    setSelectedUser({ username: '', email: '', role: '' });
-
-    setIsDrawerOpen(true);
-  };
-
-  const handleCloseDrawer = () => {
-    setIsDrawerOpen(false);
-    setIsEditDrawerOpen(false);
-  };
-  // const handleEditUser = (user) => {
-  //   setSelectedUser(user); // Set the selected user to populate the form fields
-  //   setIsEditDrawerOpen(true);
-  // };
-  const handleEditDrawerClose = () => {
-    setSelectedUser({ username: '', email: '', role: '' });
-    setIsEditDrawerOpen(false);
-  };
+  const [newUser, setNewUser] = React.useState({ username: '', email: '', role: '', password: '' });
+  const [errors, setErrors] = React.useState({});
+  React.useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,31 +24,68 @@ function GestionUtilisateurs() {
       [name]: value
     }));
   };
-  const handleSubmit = () => {
-    // Handle form submission, e.g., dispatch an action to add the new user
-    console.log('New User:', newUser);
-    dispatch(createUser(newUser));
-    Swal.fire({
-      icon: 'success',
-      title: 'Success',
-      text: 'utilisateur created successfully'
-    });
-    dispatch(fetchUser());
 
-    // Reset the form and close the drawer
-    setNewUser({ username: '', email: '', role: '' });
-    setIsDrawerOpen(false);
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    if (!newUser.username) {
+      newErrors.username = "Nom d'utilisateur requis";
+      isValid = false;
+    }
+
+    if (!newUser.email) {
+      newErrors.email = 'Email requis';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(newUser.email)) {
+      newErrors.email = 'Adresse email invalide';
+      isValid = false;
+    }
+    if (!newUser.role) {
+      newErrors.role = 'Rôle requis';
+      isValid = false;
+    }
+    if (!newUser.password) {
+      newErrors.password = 'Mot de passe requis';
+      isValid = false;
+    } else if (newUser.password.length < 6) {
+      newErrors.password = 'Le mot de passe doit comporter au moins 6 caractères';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
-  React.useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      dispatch(signupUser(newUser))
+        .unwrap()
+        .then((data) => {
+          console.log('Données de réponse :', data);
+          Swal.fire('Succès', 'Inscription réussie !', 'success');
+        })
+        .catch((error) => {
+          Swal.fire('Erreur', error.errors[0].msg || 'Une erreur est survenue', 'error');
+        });
+
+      // Réinitialiser le formulaire et fermer le tiroir
+      setNewUser({ username: '', email: '', role: '', password: '' });
+      setIsDrawerOpen(false);
+    }
+  };
 
   return (
     <div style={{ height: 400, width: '100%' }}>
       <MainCard>
         <Box m="8px 0 0 0" width="100%" height="80vh">
           <DashboardHeader title={'Gérer les utilisateurs'} />
-          <Button onClick={handleAddUser} variant="contained" color="primary" style={{ marginBottom: '50px', marginTop: '50px' }}>
+          <Button
+            onClick={() => setIsDrawerOpen(true)}
+            variant="contained"
+            color="primary"
+            style={{ marginBottom: '50px', marginTop: '50px' }}
+          >
             Ajouter un utilisateur
           </Button>
           <Drawer
@@ -80,19 +99,23 @@ function GestionUtilisateurs() {
             }}
             anchor="right"
             open={isDrawerOpen}
-            onClose={handleCloseDrawer}
+            onClose={() => setIsDrawerOpen(false)}
           >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, mt: 2 }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ marginLeft: '10px' }}>
-                  <Typography variant="h4">Nouveau utilisateur</Typography>
+                  <Typography variant="h4">Nouvel utilisateur</Typography>
                   <Typography sx={{ color: '#A0A3BD' }} variant="subtitle1">
-                    Entrez les détails du utilisateur
+                    Entrez les détails de l&apos;utilisateur
                   </Typography>
                 </div>
               </div>
               <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
-                <Button onClick={close} style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }} variant="outlined">
+                <Button
+                  onClick={() => setIsDrawerOpen(false)}
+                  style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
+                  variant="outlined"
+                >
                   Annuler
                 </Button>
                 <Box mr={2}></Box>
@@ -120,23 +143,34 @@ function GestionUtilisateurs() {
                 }}
                 variant="subtitle1"
               >
-                détails du utilisateurs
+                Détails de l&apos;utilisateur
               </Typography>
             </Box>
             <Box p={2} width="100%">
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <TextField
-                    label="Nom utilisateur"
+                    label="Nom d'utilisateur"
                     name="username"
                     value={newUser.username}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    error={errors.username !== undefined}
+                    helperText={errors.username}
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <TextField label="Email" name="email" value={newUser.email} onChange={handleChange} fullWidth margin="normal" />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    value={newUser.email}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    error={errors.email !== undefined}
+                    helperText={errors.email}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth margin="normal">
@@ -147,114 +181,31 @@ function GestionUtilisateurs() {
                       name="role"
                       value={newUser.role}
                       onChange={handleChange}
+                      error={errors.role !== undefined}
                     >
+                      <MenuItem value="">Sélectionner un rôle</MenuItem>
                       <MenuItem value="admin">Admin</MenuItem>
                       <MenuItem value="utilisateur">Utilisateur</MenuItem>
                     </Select>
+                    {errors.role && (
+                      <Typography variant="caption" color="error">
+                        {errors.role}
+                      </Typography>
+                    )}
                   </FormControl>
                 </Grid>
+
                 <Grid item xs={12}>
                   <TextField
-                    label="mot de passe"
+                    label="Mot de passe"
                     type="password"
                     name="password"
                     value={newUser.password}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Drawer>
-          <Drawer
-            sx={{
-              width: '40vw',
-              zIndex: 1300,
-              '& .MuiDrawer-paper': {
-                width: '40vw',
-                minWidth: '360px'
-              }
-            }}
-            anchor="right"
-            open={isEditDrawerOpen}
-            onClose={handleEditDrawerClose}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, mt: 2 }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ marginLeft: '10px' }}>
-                  <Typography variant="h4">Modifier utilisateur</Typography>
-                  <Typography sx={{ color: '#A0A3BD' }} variant="subtitle1">
-                    Entrez les détails du utilisateur
-                  </Typography>
-                </div>
-              </div>
-              <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
-                <Button
-                  onClick={handleEditDrawerClose}
-                  style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
-                  variant="outlined"
-                >
-                  Annuler
-                </Button>
-                <Box mr={2}></Box>
-                <Button
-                  onClick={handleSubmit}
-                  style={{ borderRadius: '20px', backgroundColor: '#F1BE15' }}
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                >
-                  Modifier
-                </Button>
-              </Box>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'start', alignItems: 'center', ml: 2, mt: 5 }}>
-              <Typography
-                sx={{
-                  color: '#A0A3BD',
-                  fontFamily: 'Poppins',
-                  fontWeight: 400,
-                  fontSize: '12px',
-                  lineHeight: '28px',
-                  letterSpacing: '0.75px',
-                  textTransform: 'uppercase'
-                }}
-                variant="subtitle1"
-              >
-                détails du utilisateurs
-              </Typography>
-            </Box>
-            <Box p={2} width="100%">
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Nom utilisateur"
-                    name="username"
-                    value={selectedUser.username || newUser.username}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Email"
-                    name="email"
-                    value={selectedUser.email || newUser.email}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Rôle"
-                    name="role"
-                    value={selectedUser.role || newUser.role}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
+                    error={errors.password !== undefined}
+                    helperText={errors.password}
                   />
                 </Grid>
               </Grid>
@@ -266,4 +217,5 @@ function GestionUtilisateurs() {
     </div>
   );
 }
+
 export default GestionUtilisateurs;

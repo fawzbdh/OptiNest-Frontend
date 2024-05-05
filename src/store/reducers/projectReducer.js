@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from 'utils/api';
 
-const baseURL = 'http://localhost:8000/api/project'; // Define baseURL
+const baseURL = '/project'; // Define baseURL
 export const fetchProjects = createAsyncThunk('project/fetchProjects', async (_, thunkAPI) => {
   const { rejectWithValue } = thunkAPI;
   try {
     const token = localStorage.getItem('token');
-    const res = await axios.get(`${baseURL}`, {
+    const res = await api.get(`${baseURL}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -21,7 +21,7 @@ export const fetchprojectByUserId = createAsyncThunk('project/fetchprojectbyuser
   const { rejectWithValue } = thunkAPI;
   try {
     const token = localStorage.getItem('token');
-    const res = await axios.get(`${baseURL}/byUserId`, {
+    const res = await api.get(`${baseURL}/byUserId`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -36,7 +36,7 @@ export const fetchProjectById = createAsyncThunk('project/fetchProjectById', asy
   const { rejectWithValue } = thunkAPI;
   try {
     const token = localStorage.getItem('token');
-    const res = await axios.get(`${baseURL}/${projectId}`, {
+    const res = await api.get(`${baseURL}/${projectId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -52,7 +52,7 @@ export const createProject = createAsyncThunk('project/createProject', async (pr
   const { rejectWithValue } = thunkAPI;
   try {
     const token = localStorage.getItem('token');
-    const res = await axios.post(baseURL, projectData, {
+    const res = await api.post(baseURL, projectData, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -69,7 +69,7 @@ export const updateProject = createAsyncThunk('project/updateProject', async ({ 
   const { rejectWithValue } = thunkAPI;
   try {
     const token = localStorage.getItem('token');
-    const res = await axios.put(`${baseURL}/${id}`, projectData, {
+    const res = await api.put(`${baseURL}/${id}`, projectData, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -84,14 +84,17 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (pr
   const { rejectWithValue } = thunkAPI;
   try {
     const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token not found in local storage');
+    }
     // Send a DELETE request to the server to delete the project
-    await axios.delete(`${baseURL}/${projectId}`, {
+    const response = await api.delete(`${baseURL}/${projectId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
     // Return the deleted project ID as the result
-    return projectId;
+    return response.data.data;
   } catch (error) {
     return rejectWithValue(error.message);
   }
@@ -100,100 +103,95 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (pr
 export const projectSlice = createSlice({
   name: 'project',
   initialState: {
-    data: [],
-    getalldata: [],
-    selectedProject: null,
-    status: null,
-    error: null
+    project: null,
+    loading: false,
+    error: null,
+    projects: []
   },
   reducers: {},
 
   extraReducers: (builder) => {
     builder
       .addCase(fetchProjects.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.status = 'success';
-        state.error = null;
+        state.loading = false;
+        // Handle fetched users data
+        state.projects = action.payload;
       })
       .addCase(fetchProjects.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(fetchProjects.rejected, (state, action) => {
-        state.status = 'failed';
+        state.loading = false;
         state.error = action.payload;
       })
       // Fetch projects
       .addCase(fetchprojectByUserId.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.status = 'success';
-        state.error = null;
+        state.loading = false;
+        // Handle fetched users data
+        state.projects = action.payload;
       })
       .addCase(fetchprojectByUserId.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(fetchprojectByUserId.rejected, (state, action) => {
-        state.status = 'failed';
+        state.loading = false;
         state.error = action.payload;
       })
       // Create project
       .addCase(createProject.fulfilled, (state, action) => {
-        state.data.push(action.payload);
-        state.status = 'success';
-        state.error = null;
+        state.loading = false;
+        // Update users array with the newly signed-up user
+        state.projects.push(action.payload);
+        state.project = action.payload;
       })
       .addCase(createProject.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(createProject.rejected, (state, action) => {
-        state.status = 'failed';
+        state.loading = false;
         state.error = action.payload;
       })
       // Update project
       .addCase(updateProject.fulfilled, (state, action) => {
         // Find the project by ID and update its data
-        const index = state.data.findIndex((project) => project.id === action.payload.id);
-        if (index !== -1) {
-          state.data[index] = action.payload;
-        }
-        state.status = 'success';
-        state.error = null;
+        state.loading = false;
+        // Update the user in the users array with the updated user data
+        state.projects = state.projects.map((project) => (project.id === action.payload.id ? action.payload : project));
       })
       .addCase(updateProject.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(updateProject.rejected, (state, action) => {
-        state.status = 'failed';
+        state.loading = false;
         state.error = action.payload;
       })
       .addCase(fetchProjectById.fulfilled, (state, action) => {
-        state.selectedProject = action.payload;
-        state.status = 'success';
-        state.error = null;
+        state.loading = false;
+        state.project = action.payload; // Set the current user as well
       })
       .addCase(fetchProjectById.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(fetchProjectById.rejected, (state, action) => {
-        state.status = 'failed';
+        state.loading = false;
         state.error = action.payload;
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
-        // Remove the deleted project from the state
-        state.data = state.data.filter((project) => project.id !== action.payload);
-        state.status = 'success';
-        state.error = null;
+        state.loading = false;
+        // Remove the deleted user from the users array
+        state.projects = state.projects.filter((project) => project.id !== action.payload.id);
       })
       .addCase(deleteProject.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(deleteProject.rejected, (state, action) => {
-        state.status = 'failed';
+        state.loading = false;
         state.error = action.payload;
       });
   }
