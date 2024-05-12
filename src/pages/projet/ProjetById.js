@@ -10,8 +10,10 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjectById, updateProject } from 'store/reducers/projectReducer';
 import { createFichier, fetchFichiersByProjectId, updatePriority, updateQuantity } from 'store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
+import { useMediaQuery } from '@mui/material';
 
 import ImporterFiles from 'pages/preparer/ImporterFiles';
+import { drawerWidth } from 'config';
 
 function ProjetById() {
   const { selectedProject, status } = useSelector((state) => state.project);
@@ -21,6 +23,7 @@ function ProjetById() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [current, setCurrent] = useState(selectedProject?.steps || 0); // Start from 0 or selectedProject.steps
+  const matchesXs = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
   // Access the project ID from the URL parameters
   const { projectId } = useParams();
@@ -229,19 +232,73 @@ function ProjetById() {
       {current === 2 && <Placer />}
       {current === 3 && <Couper />}
 
-      <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          right: 0,
+          width: `calc(100% - ${matchesXs ? 0 : drawerWidth}px)`,
+          padding: '0px',
+          backgroundColor: 'white',
+          borderTop: '1px solid #ddd',
+          display: 'flex', // Set display to flex
+          justifyContent: 'space-between' // Align items in a row with space between them
+        }}
+      >
         {current === 0 ? (
-          <Button startIcon={<ArrowBackIcon />} style={{ marginRight: '8px', width: '50%' }} onClick={() => navigate('/projet')}>
+          <Button
+            variant="contained"
+            startIcon={<ArrowBackIcon />}
+            style={{
+              width: '50%',
+              height: '70px',
+              backgroundColor: 'black',
+              color: 'white',
+              borderRadius: '0px',
+              '&:hover': {
+                backgroundColor: 'black',
+                color: 'white',
+                border: '1px solid white'
+              }
+            }}
+            onClick={() => navigate('/projet')}
+          >
             List de projet
           </Button>
         ) : (
-          <Button style={{ marginRight: '8px', width: '50%' }} onClick={handlePrev}>
+          <Button
+            style={{
+              width: '50%',
+              height: '70px',
+              backgroundColor: 'black',
+              color: 'white',
+              borderRadius: '0px',
+              '&:hover': {
+                backgroundColor: 'black',
+                color: 'white',
+                border: '1px solid white'
+              }
+            }}
+            onClick={handlePrev}
+          >
             Précédent
           </Button>
         )}
 
         <Button
-          style={{ width: '50%' }}
+          style={{
+            width: '50%',
+            height: '70px',
+            borderRadius: '0px',
+            backgroundColor: '#12CC04',
+            color: 'white',
+            border: '1px solid #12CC04',
+            '&:hover': {
+              backgroundColor: '#12CC04',
+              color: 'white',
+              border: '1px solid white'
+            }
+          }}
           variant="contained"
           onClick={handleNext}
           disabled={current === totalSteps - 1 || (current === 0 && uploadedFilesCount === 0 && selectedProject?.fileCount === 0)}
