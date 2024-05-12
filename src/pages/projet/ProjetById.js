@@ -252,11 +252,11 @@ function ProjetById() {
             style={{
               width: '50%',
               height: '70px',
-              backgroundColor: 'black',
+              backgroundColor: '#4a4a4a',
               color: 'white',
               borderRadius: '0px',
               '&:hover': {
-                backgroundColor: 'black',
+                backgroundColor: '#4a4a4a',
                 color: 'white',
                 border: '1px solid white'
               }
@@ -270,11 +270,11 @@ function ProjetById() {
             style={{
               width: '50%',
               height: '70px',
-              backgroundColor: 'black',
+              backgroundColor: '#4a4a4a',
               color: 'white',
               borderRadius: '0px',
               '&:hover': {
-                backgroundColor: 'black',
+                backgroundColor: '#4a4a4a',
                 color: 'white',
                 border: '1px solid white'
               }
@@ -284,17 +284,17 @@ function ProjetById() {
             Précédent
           </Button>
         )}
-
+        <div style={{ width: '10%', background: 'repeating-linear-gradient(-75deg, #7ed321, #7ed321 49%, #4a4a4a 51%, #4a4a4a)' }}></div>
         <Button
           style={{
             width: '50%',
             height: '70px',
             borderRadius: '0px',
-            backgroundColor: '#12CC04',
+            backgroundColor: '#7ED321',
             color: 'white',
-            border: '1px solid #12CC04',
+            border: '1px solid #7ED321',
             '&:hover': {
-              backgroundColor: '#12CC04',
+              backgroundColor: '#7ED321',
               color: 'white',
               border: '1px solid white'
             }
