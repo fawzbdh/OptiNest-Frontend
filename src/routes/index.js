@@ -5,9 +5,10 @@ import LoginRoutes from './LoginRoutes';
 import ProjetRoute from './ProjetRoute';
 import StepperRoute from './StepperRoutes';
 import GestionRoute from './GestionRoute';
+import FeedbackRoute from './FeedbackRoute';
 
 // ==============================|| ROUTING RENDER ||============================== //
 
 export default function ThemeRoutes() {
-  return useRoutes([ProjetRoute, LoginRoutes, StepperRoute, GestionRoute]);
+  return useRoutes([ProjetRoute, LoginRoutes, StepperRoute, GestionRoute, FeedbackRoute]);
 }

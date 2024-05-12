@@ -16,13 +16,13 @@ import ImporterFiles from 'pages/preparer/ImporterFiles';
 import { drawerWidth } from 'config';
 
 function ProjetById() {
-  const { selectedProject, status } = useSelector((state) => state.project);
+  const { project, status } = useSelector((state) => state.project);
   const { files, status: statusFiles } = useSelector((state) => state.fichier); // Get files from redux state
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0); // Track the number of uploaded files
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [current, setCurrent] = useState(selectedProject?.steps || 0); // Start from 0 or selectedProject.steps
+  const [current, setCurrent] = useState(project?.steps || 0); // Start from 0 or project.steps
   const matchesXs = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
   // Access the project ID from the URL parameters
@@ -35,8 +35,8 @@ function ProjetById() {
   }, [dispatch, projectId]);
 
   useEffect(() => {
-    setCurrent(selectedProject?.steps || 0);
-  }, [selectedProject]);
+    setCurrent(project?.steps || 0);
+  }, [project]);
 
   if (status === 'loading' || statusFiles === 'loading') {
     return <div>Loading...</div>;
@@ -52,7 +52,7 @@ function ProjetById() {
   };
 
   const handleNext = async () => {
-    if (current === 0 && selectedProject?.fileCount === 0 && uploadedFilesCount === 0) {
+    if (current === 0 && project?.fileCount === 0 && uploadedFilesCount === 0) {
       console.log('No files uploaded yet');
       return;
     }
@@ -81,7 +81,7 @@ function ProjetById() {
     setUploadedFilesCount(files.length);
   };
   const updateSteps = (step) => {
-    if (step === 0 && selectedProject?.fileCount === 0) {
+    if (step === 0 && project?.fileCount === 0) {
       console.log('No files uploaded yet');
       return;
     }
@@ -112,16 +112,20 @@ function ProjetById() {
           className="site-navigation-steps"
           items={[
             {
-              title: 'Importer'
+              title: 'Importer',
+              onClick: () => {}
             },
             {
-              title: 'Préparer'
+              title: 'Préparer',
+              onClick: () => {}
             },
             {
-              title: 'Placer'
+              title: 'Placer',
+              onClick: () => {}
             },
             {
-              title: 'Couper'
+              title: 'Couper',
+              onClick: () => {}
             }
           ]}
         />
@@ -301,7 +305,7 @@ function ProjetById() {
           }}
           variant="contained"
           onClick={handleNext}
-          disabled={current === totalSteps - 1 || (current === 0 && uploadedFilesCount === 0 && selectedProject?.fileCount === 0)}
+          disabled={current === totalSteps - 1 || (current === 0 && uploadedFilesCount === 0 && project?.fileCount === 0)}
         >
           Suivant
         </Button>

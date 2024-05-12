@@ -32,7 +32,6 @@ function ProjetSuivi() {
       headerName: 'status',
       width: 150
     },
-    { field: 'steps', headerName: 'steps', width: 150 },
     {
       field: 'feedback',
       headerName: 'Feedback',
