@@ -7,9 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjects } from '../../store/reducers/projectReducer';
 import moment from 'moment';
 import { DatePicker } from 'antd';
+import { Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function ProjetSuivi() {
-  const { data } = useSelector((state) => state.project);
+  const { projects } = useSelector((state) => state.project);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,10 +32,24 @@ function ProjetSuivi() {
       headerName: 'status',
       width: 150
     },
-    { field: 'steps', headerName: 'steps', width: 150 }
+    { field: 'steps', headerName: 'steps', width: 150 },
+    {
+      field: 'feedback',
+      headerName: 'Feedback',
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          component={Link}
+          to={`/feedback/${params.row.id}`} // Assuming id is the project ID
+          variant="contained"
+          color="primary"
+        >
+          Feedback
+        </Button>
+      )
+    }
   ];
 
-  const user = JSON.parse(window.localStorage.getItem('user'));
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
@@ -44,7 +60,7 @@ function ProjetSuivi() {
       <DatePicker onChange={onChange} />
       <br />
       <br />
-      <DataGrid autoHeight sx={{ width: '99%', margin: 'auto' }} rows={data.filter((item) => item.id !== user?.id)} columns={columns} />
+      <DataGrid autoHeight sx={{ width: '99%', margin: 'auto' }} rows={projects} columns={columns} />
     </MainCard>
   );
 }

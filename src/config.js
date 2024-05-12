@@ -1,4 +1,5 @@
 // ==============================|| THEME CONFIG  ||============================== //
+const user = JSON.parse(localStorage.getItem('user'));
 
 const config = {
   defaultPath: '/projet/',
@@ -10,7 +11,6 @@ const config = {
   presetColor: 'default',
   themeDirection: 'ltr'
 };
-const user = JSON.parse(window.localStorage.getItem('user'));
 
 export default config;
 export const drawerWidth = user?.role !== 'admin' ? 0 : 260;
