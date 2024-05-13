@@ -5,19 +5,64 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
 // import TextField from '@mui/material/TextField';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import the delete icon
 
 function Placer() {
   const [data, setData] = useState([]);
-  const [sheetName, setSheetName] = useState('');
+  const [margins, setMargins] = useState({
+    top: '',
+    bottom: '',
+    left: '',
+    right: ''
+  });
+
+  const addSheet = () => {
+    setData([...data, { name: '', hauteur: '', largeur: '', priority: 1, quantity: 1 }]);
+  };
+
+  const handleNameChange = (index, value) => {
+    const newData = [...data];
+    newData[index].name = value;
+    setData(newData);
+  };
+  const handleQuantityChange = (index, newValue) => {
+    const newData = [...data];
+    newData[index].quantity = Math.max(1, newValue); // Ensure quantity is at least 1
+    setData(newData);
+  };
+
+  const handlePriorityChange = (index, newValue) => {
+    const newData = [...data];
+    newData[index].priority = Math.max(0, newValue); // Ensure priority is at least 0
+    setData(newData);
+  };
+  const handleDeleteRow = (index) => {
+    const newData = [...data];
+    newData.splice(index, 1); // Remove the item at the specified index
+    setData(newData);
+  };
+  const handleMarginChange = (direction, value) => {
+    setMargins((prevState) => ({
+      ...prevState,
+      [direction]: value
+    }));
+  };
+  const handleDimensionChange = (index, dimension, value) => {
+    const newData = [...data];
+    newData[index][dimension] = value;
+    setData(newData);
+  };
+  const handleSubmit = () => {
+    console.log(data);
+    console.log(margins);
+  };
 
   return (
     <div>
       <Button
         variant="contained"
         style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#12cc04', marginBottom: '10px' }}
-        onClick={() => {
-          setData([...data, { name: 'test', hauteur: '', largeur: '', priority: 1, quantity: 1 }]);
-        }}
+        onClick={addSheet}
       >
         <AddCircleIcon />
         {'    '} Ajouter Sheet
@@ -36,9 +81,9 @@ function Placer() {
         <div style={{ width: '100%', borderRight: '1px solid gray' }}>
           {' '}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 1fr', gap: '10px', borderBottom: '1px solid gray' }}>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>Name</p>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>Size</p>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>quantity</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>Nom</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>Les dimensions</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>Quantité</p>
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Priorité</p>
           </div>
           {data?.map((item, index) => {
@@ -56,19 +101,18 @@ function Placer() {
                 }}
               >
                 <OutlinedInput
-                  id="outlined-adornment-weight"
+                  id={`name-${index}`}
                   aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    'aria-label': 'weight'
-                  }}
-                  value={sheetName || item?.name || ''}
-                  onChange={(e) => setSheetName(e.target.value)}
+                  value={item.name}
+                  onChange={(e) => handleNameChange(index, e.target.value)}
                   style={{ height: '40px' }}
                 />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <OutlinedInput
                     id="outlined-adornment-weight"
                     type="number"
+                    value={item.largeur}
+                    onChange={(e) => handleDimensionChange(index, 'largeur', e.target.value)}
                     endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                     aria-describedby="outlined-weight-helper-text"
                     inputProps={{
@@ -80,6 +124,8 @@ function Placer() {
                   <OutlinedInput
                     id="outlined-adornment-weight"
                     type="number"
+                    value={item.hauteur}
+                    onChange={(e) => handleDimensionChange(index, 'hauteur', e.target.value)}
                     endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                     aria-describedby="outlined-weight-helper-text"
                     inputProps={{
@@ -90,7 +136,7 @@ function Placer() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
                   <button
-                    // onClick={() => handleQuantityChange(item.id, Math.max(1, item.quantity - 1))}
+                    onClick={() => handleQuantityChange(index, item.quantity - 1)}
                     style={{
                       cursor: 'pointer',
                       background: 'rgb(18, 204, 4)',
@@ -106,7 +152,7 @@ function Placer() {
                   </button>
                   <span>{item.quantity}</span>
                   <button
-                    // onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                    onClick={() => handleQuantityChange(index, item.quantity + 1)}
                     style={{
                       cursor: 'pointer',
                       background: 'rgb(18, 204, 4)',
@@ -121,11 +167,10 @@ function Placer() {
                     +
                   </button>
                 </div>
-                {/* <div>{item.width && item.width.toFixed(2)}</div>
-                <div>{item.height && item.height.toFixed(2)}</div> */}
+
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
                   <button
-                    // onClick={() => handlePriorityChange(item.id, Math.max(0, item.priority - 1))}
+                    onClick={() => handlePriorityChange(index, item.priority - 1)}
                     style={{
                       cursor: 'pointer',
                       background: 'rgb(18, 204, 4)',
@@ -141,7 +186,7 @@ function Placer() {
                   </button>
                   <span>{item.priority}</span>
                   <button
-                    // onClick={() => handlePriorityChange(item.id, item.priority + 1)}
+                    onClick={() => handlePriorityChange(index, item.priority + 1)}
                     style={{
                       cursor: 'pointer',
                       background: 'rgb(18, 204, 4)',
@@ -155,21 +200,39 @@ function Placer() {
                   >
                     +
                   </button>
+                  <DeleteIcon onClick={() => handleDeleteRow(index)} style={{ cursor: 'pointer', color: 'red' }} />
                 </div>
               </div>
             );
           })}
         </div>
         <div style={{ width: '100%', paddingTop: '10px' }}>
-          <span style={{ color: '#12cc04', fontWeight: 'bold', fontSize: '30px' }}>Ecart :</span>
+          <span style={{ color: '#12cc04', fontWeight: 'bold', fontSize: '30px' }}>Les ecart :</span>
           <div style={{ display: 'flex', gap: '5px' }}>
             <div>
-              <p>Ecart top</p>
+              <p>Ecart haut</p>
+              <OutlinedInput
+                id="outlined-adornment-top"
+                type="number"
+                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
+                aria-describedby="outlined-weight-helper-text"
+                value={margins.top}
+                onChange={(e) => handleMarginChange('top', e.target.value)}
+                inputProps={{
+                  'aria-label': 'top-margin'
+                }}
+                style={{ height: '40px' }}
+              />
+            </div>
+            <div>
+              <p>Ecart bas</p>
               <OutlinedInput
                 id="outlined-adornment-weight"
                 type="number"
                 endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                 aria-describedby="outlined-weight-helper-text"
+                value={margins.bottom}
+                onChange={(e) => handleMarginChange('bottom', e.target.value)}
                 inputProps={{
                   'aria-label': 'weight'
                 }}
@@ -177,12 +240,14 @@ function Placer() {
               />
             </div>
             <div>
-              <p>Ecart bottom</p>
+              <p>Ecart gauche</p>
               <OutlinedInput
                 id="outlined-adornment-weight"
                 type="number"
                 endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                 aria-describedby="outlined-weight-helper-text"
+                value={margins.left}
+                onChange={(e) => handleMarginChange('left', e.target.value)}
                 inputProps={{
                   'aria-label': 'weight'
                 }}
@@ -190,25 +255,14 @@ function Placer() {
               />
             </div>
             <div>
-              <p>Ecart left</p>
+              <p>Ecart droite</p>
               <OutlinedInput
                 id="outlined-adornment-weight"
                 type="number"
                 endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                 aria-describedby="outlined-weight-helper-text"
-                inputProps={{
-                  'aria-label': 'weight'
-                }}
-                style={{ height: '40px' }}
-              />
-            </div>
-            <div>
-              <p>Ecart rigth</p>
-              <OutlinedInput
-                id="outlined-adornment-weight"
-                type="number"
-                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
-                aria-describedby="outlined-weight-helper-text"
+                value={margins.right}
+                onChange={(e) => handleMarginChange('right', e.target.value)}
                 inputProps={{
                   'aria-label': 'weight'
                 }}
@@ -216,6 +270,14 @@ function Placer() {
               />
             </div>
           </div>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#1976d2', marginBottom: '10px' }}
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
         </div>
       </div>
     </div>
