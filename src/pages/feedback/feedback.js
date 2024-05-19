@@ -84,6 +84,7 @@ function Feedback() {
         dispatch(deletefeedack(id))
           .unwrap()
           .then((data) => {
+            console.log('feedack supprimé :', data);
             Swal.fire('Succès', 'Feedback supprimé avec succès !', 'success');
           })
           .catch((error) => {
@@ -105,7 +106,7 @@ function Feedback() {
       <div style={{ display: 'flex', justifyContent: 'end' }}>
         <Button
           variant="contained"
-          style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#12cc04', marginBottom: '10px' }}
+          style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#28DCE7', marginBottom: '10px' }}
           onClick={handleOpen}
         >
           <AddCircleIcon />
@@ -135,15 +136,15 @@ function Feedback() {
           </form>
         </Box>
       </Modal>
-      <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+      <div style={{ display: 'grid', gap: '10px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
         {feedbacks.map((item) => (
-          <MainCard>
+          <MainCard key={item.id}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p>Feddback by :{item.User.username}</p>
+                <p>Feedback by: {item?.User?.username}</p>
                 <p>{item.description}</p>
               </div>
-              <div style={{ width: '50px' }}>
+              <div style={{ width: '50px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
                 <DeleteIcon style={{ cursor: 'pointer', color: 'red' }} onClick={() => handleDeleteFeedback(item.id)} />
                 <EditIcon
                   style={{ cursor: 'pointer', color: 'orange' }}

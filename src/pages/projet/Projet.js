@@ -13,6 +13,7 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
 import Swal from 'sweetalert2';
 import { DatePicker } from 'antd';
+import { Box, CircularProgress } from '@mui/material';
 const { RangePicker } = DatePicker;
 function Projet() {
   const dispatch = useDispatch();
@@ -86,7 +87,11 @@ function Projet() {
   };
 
   if (loading === true) {
-    return <div>Loading...</div>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error === 'Request failed with status code 401') {
@@ -128,17 +133,17 @@ function Projet() {
                 marginRight: '10px',
                 borderRadius: '20px',
                 backgroundColor: 'white',
-                color: '#12cc04',
-                border: '1px solid #12cc04',
+                color: '#28DCE7',
+                border: '1px solid #28DCE7',
                 '&:hover': {
-                  backgroundColor: '#12cc04',
+                  backgroundColor: '#28DCE7',
                   color: 'white',
                   border: '1px solid white'
                 }
               }}
               startIcon={<ArrowRightIcon />}
             >
-              Répondre
+              Réprendre
             </Button>
           )}
           {params.row.status === 'Prêt' && (
@@ -148,10 +153,10 @@ function Projet() {
                 marginRight: '10px',
                 borderRadius: '20px',
                 backgroundColor: 'white',
-                color: '#12cc04',
-                border: '1px solid #12cc04',
+                color: '#28DCE7',
+                border: '1px solid #28DCE7',
                 '&:hover': {
-                  backgroundColor: '#12cc04',
+                  backgroundColor: '#28DCE7',
                   color: 'white',
                   border: '1px solid white'
                 }
@@ -182,7 +187,10 @@ function Projet() {
               Editer
             </Button>
           )}
-          <DeleteIcon sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleDeleteProject(params.id)} />
+          <DeleteIcon
+            sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer', alignSelf: 'self' }}
+            onClick={() => handleDeleteProject(params.id)}
+          />
         </div>
       )
     }
@@ -197,7 +205,7 @@ function Projet() {
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button
           onClick={handleNouveauProjetClick}
-          sx={{ borderRadius: '20px', backgroundColor: '#12cc04', marginTop: '20px', marginBottom: '20px' }}
+          sx={{ borderRadius: '20px', backgroundColor: '#28DCE7', marginTop: '20px', marginBottom: '20px' }}
           variant="contained"
         >
           Nouveau projet

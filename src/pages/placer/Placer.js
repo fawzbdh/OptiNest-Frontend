@@ -155,7 +155,7 @@ function Placer() {
     <div>
       <Button
         variant="contained"
-        style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#12cc04', marginBottom: '10px' }}
+        style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#28DCE7', marginBottom: '10px' }}
         onClick={addSheet}
       >
         <AddCircleIcon />
@@ -173,9 +173,9 @@ function Placer() {
       >
         <div style={{ width: '100%', borderRight: '1px solid gray' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 1fr', gap: '10px', borderBottom: '1px solid gray' }}>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>Nom</p>
+            <p style={{ fontSize: '18px', fontWeight: '700' }}>Nom de tole</p>
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Les dimensions</p>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>Quantité</p>
+            <p style={{ fontSize: '18px', fontWeight: '700', marginLeft: '10px' }}>Quantité</p>
           </div>
           {data?.map((item, index) => (
             <div
@@ -229,13 +229,14 @@ function Placer() {
                   onClick={() => handleQuantityChange(index, item.quantity - 1)}
                   style={{
                     cursor: 'pointer',
-                    background: 'rgb(18, 204, 4)',
+                    background: 'grey',
                     color: 'white',
                     border: '0',
                     fontSize: '18px',
                     borderRadius: '5px',
                     width: '25px',
-                    height: '25px'
+                    height: '25px',
+                    marginLeft: '10px'
                   }}
                 >
                   -
@@ -245,7 +246,7 @@ function Placer() {
                   onClick={() => handleQuantityChange(index, item.quantity + 1)}
                   style={{
                     cursor: 'pointer',
-                    background: 'rgb(18, 204, 4)',
+                    background: 'grey',
                     color: 'white',
                     border: '0',
                     fontSize: '18px',
@@ -264,7 +265,7 @@ function Placer() {
           ))}
         </div>
         <div style={{ width: '100%', paddingTop: '10px' }}>
-          <span style={{ color: '#12cc04', fontWeight: 'bold', fontSize: '30px' }}>Paramétres de placement :</span>
+          <span style={{ color: 'grey', fontWeight: 'bold', fontSize: '30px' }}>Paramétres de placement :</span>
           <div style={{ display: 'flex', gap: '5px' }}>
             <div>
               <p>Ecart haut</p>

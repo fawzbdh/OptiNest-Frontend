@@ -114,7 +114,7 @@ function AuthLogin() {
     <div
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(to left, #12cc04, #42b603,#a4f678, #FFFFFF)', // Change direction to bottom left
+        background: 'linear-gradient(to left, #28DCE7, #42b603,#a4f678, #FFFFFF)', // Change direction to bottom left
         color: '#fff',
         display: 'flex',
         justifyContent: 'center',

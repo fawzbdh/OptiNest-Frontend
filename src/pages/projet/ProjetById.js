@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjectById, updateProject } from 'store/reducers/projectReducer';
 import { createFichier, fetchFichiersByProjectId, updatePriority, updateQuantity } from 'store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
-import { useMediaQuery } from '@mui/material';
+import { useMediaQuery, Box, CircularProgress } from '@mui/material';
 
 import ImporterFiles from 'pages/preparer/ImporterFiles';
 import { drawerWidth } from 'config';
@@ -41,7 +41,11 @@ function ProjetById() {
   }, [project]);
 
   if (status === 'loading' || statusFiles === 'loading') {
-    return <div>Loading...</div>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   const handleUploadedFiles = (files) => {
