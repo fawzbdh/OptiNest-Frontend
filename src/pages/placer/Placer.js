@@ -17,7 +17,7 @@ function Placer() {
   });
 
   const addSheet = () => {
-    setData([...data, { name: '', hauteur: '', largeur: '', priority: 1, quantity: 1 }]);
+    setData([...data, { name: '', hauteur: '', largeur: '', quantity: 1 }]);
   };
 
   const handleNameChange = (index, value) => {
@@ -31,11 +31,6 @@ function Placer() {
     setData(newData);
   };
 
-  const handlePriorityChange = (index, newValue) => {
-    const newData = [...data];
-    newData[index].priority = Math.max(0, newValue); // Ensure priority is at least 0
-    setData(newData);
-  };
   const handleDeleteRow = (index) => {
     const newData = [...data];
     newData.splice(index, 1); // Remove the item at the specified index
@@ -65,7 +60,7 @@ function Placer() {
         onClick={addSheet}
       >
         <AddCircleIcon />
-        {'    '} Ajouter Sheet
+        {'    '} Ajouter Format
       </Button>
 
       <div
@@ -84,7 +79,6 @@ function Placer() {
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Nom</p>
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Les dimensions</p>
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Quantité</p>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>Priorité</p>
           </div>
           {data?.map((item, index) => {
             return (
@@ -169,37 +163,6 @@ function Placer() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                  <button
-                    onClick={() => handlePriorityChange(index, item.priority - 1)}
-                    style={{
-                      cursor: 'pointer',
-                      background: 'rgb(18, 204, 4)',
-                      color: 'white',
-                      border: '0',
-                      fontSize: '18px',
-                      borderRadius: '5px',
-                      width: '25px',
-                      height: '25px'
-                    }}
-                  >
-                    -
-                  </button>
-                  <span>{item.priority}</span>
-                  <button
-                    onClick={() => handlePriorityChange(index, item.priority + 1)}
-                    style={{
-                      cursor: 'pointer',
-                      background: 'rgb(18, 204, 4)',
-                      color: 'white',
-                      border: '0',
-                      fontSize: '18px',
-                      borderRadius: '5px',
-                      width: '25px',
-                      height: '25px'
-                    }}
-                  >
-                    +
-                  </button>
                   <DeleteIcon onClick={() => handleDeleteRow(index)} style={{ cursor: 'pointer', color: 'red' }} />
                 </div>
               </div>
@@ -207,7 +170,7 @@ function Placer() {
           })}
         </div>
         <div style={{ width: '100%', paddingTop: '10px' }}>
-          <span style={{ color: '#12cc04', fontWeight: 'bold', fontSize: '30px' }}>Les ecart :</span>
+          <span style={{ color: '#12cc04', fontWeight: 'bold', fontSize: '30px' }}>Paramétres de placement :</span>
           <div style={{ display: 'flex', gap: '5px' }}>
             <div>
               <p>Ecart haut</p>
