@@ -14,6 +14,8 @@ import { useMediaQuery } from '@mui/material';
 
 import ImporterFiles from 'pages/preparer/ImporterFiles';
 import { drawerWidth } from 'config';
+const presedent = ['Liste des projets', 'importer plus de pièces', ' Configurer les quantités'];
+const suivent = ['Configurer les quantités', 'Configurer le placement', "Démarrer l'optimisation"];
 
 function ProjetById() {
   const { project, status } = useSelector((state) => state.project);
@@ -285,7 +287,7 @@ function ProjetById() {
             }}
             onClick={handlePrev}
           >
-            Précédent
+            {presedent[current]}
           </Button>
         )}
         <div style={{ width: '10%', background: 'repeating-linear-gradient(-75deg, #7ed321, #7ed321 49%, #4a4a4a 51%, #4a4a4a)' }}></div>
@@ -307,7 +309,7 @@ function ProjetById() {
           onClick={handleNext}
           disabled={current === totalSteps - 1 || (current === 0 && uploadedFilesCount === 0 && project?.fileCount === 0)}
         >
-          Suivant
+          {suivent[current]}
         </Button>
       </div>
     </MainCard>
