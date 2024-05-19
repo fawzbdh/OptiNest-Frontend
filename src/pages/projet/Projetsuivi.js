@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 
 import Typography from '@mui/material/Typography';
@@ -9,10 +9,12 @@ import moment from 'moment';
 import { DatePicker } from 'antd';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+const { RangePicker } = DatePicker;
 
 function ProjetSuivi() {
   const { projects } = useSelector((state) => state.project);
   const dispatch = useDispatch();
+  const [filterDate, setFilterDate] = useState(['', '']);
 
   useEffect(() => {
     dispatch(fetchProjects());
@@ -50,16 +52,26 @@ function ProjetSuivi() {
   ];
 
   const onChange = (date, dateString) => {
-    console.log(date, dateString);
+    setFilterDate(dateString);
   };
   return (
     <MainCard>
       <Typography variant="h3">Suivi Projet</Typography>
       <br />
-      <DatePicker onChange={onChange} />
+      <RangePicker onChange={onChange} />
       <br />
       <br />
-      <DataGrid autoHeight sx={{ width: '99%', margin: 'auto' }} rows={projects} columns={columns} />
+      <DataGrid
+        autoHeight
+        sx={{ width: '99%', margin: 'auto' }}
+        rows={projects.filter((item) =>
+          filterDate[0] !== '' && filterDate[1] !== ''
+            ? new Date(moment(item.createdAt).format('YYYY-MM-DD')) >= new Date(filterDate[0]) &&
+              new Date(moment(item.createdAt).format('YYYY-MM-DD')) <= new Date(filterDate[1])
+            : true
+        )}
+        columns={columns}
+      />
     </MainCard>
   );
 }
