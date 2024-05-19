@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createContainer, updateContainer, fetchContainerByProjectId } from 'store/reducers/containerReducer';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { createMultipleFormats, fetchFormatByProjectId, updateMultipleFormats } from 'store/reducers/formatReducer';
+import { createMultipleFormats, deleteFormat, fetchFormatByProjectId, updateMultipleFormats } from 'store/reducers/formatReducer';
 
 function Placer() {
   const dispatch = useDispatch();
@@ -46,6 +46,7 @@ function Placer() {
     if (formats.length > 0) {
       setData(
         formats.map((format) => ({
+          id: format.id,
           name: format.nom,
           hauteur: format.hauteur,
           largeur: format.largeur,
@@ -71,12 +72,25 @@ function Placer() {
     setData(newData);
   };
 
-  const handleDeleteRow = (index) => {
+  const handleDeleteRow = async (index) => {
+    const formatToDelete = data[index];
+
+    if (formatToDelete.id) {
+      // If the format has an ID, it means it exists in the database
+      try {
+        await dispatch(deleteFormat(formatToDelete.id));
+        Swal.fire('Format deleted successfully!', '', 'success');
+      } catch (error) {
+        Swal.fire('Error:', error.message, 'error');
+        return;
+      }
+    }
+
+    // Remove the item from local state
     const newData = [...data];
     newData.splice(index, 1); // Remove the item at the specified index
     setData(newData);
   };
-
   const handleMarginChange = (direction, value) => {
     setMargins((prevState) => ({
       ...prevState,
@@ -115,8 +129,13 @@ function Placer() {
         const existingFormatIds = formats.map((format) => format.id);
         const newFormats = data.filter((format) => !existingFormatIds.includes(format.id));
         const updateFormats = data.filter((format) => existingFormatIds.includes(format.id));
+        console.log('**********************************');
         console.log(updateFormats);
+        console.log('**********************************');
+
         console.log(newFormats);
+        console.log('**********************************');
+
         if (newFormats.length > 0) {
           await dispatch(createMultipleFormats({ projectId, formatsData: newFormats }));
         }
