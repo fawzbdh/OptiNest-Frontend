@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjects } from '../../store/reducers/projectReducer';
 import moment from 'moment';
 import { DatePicker } from 'antd';
-import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 const { RangePicker } = DatePicker;
 
 function ProjetSuivi() {
@@ -21,32 +21,32 @@ function ProjetSuivi() {
   }, [dispatch]);
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 150 },
-    { field: 'name', headerName: 'Nom project', width: 150 },
+    { field: 'id', headerName: 'ID', width: 200 },
+    { field: 'name', headerName: 'Nom project', width: 200 },
     {
       field: 'createdAt',
       headerName: 'Date de creation',
       valueGetter: (value, row) => moment(row.createdAt).format('YYYY-MM-DD'),
-      width: 150
+      width: 200
     },
     {
       field: 'status',
       headerName: 'status',
-      width: 150
+      width: 200
     },
     {
       field: 'feedback',
       headerName: 'Feedback',
-      width: 150,
+      width: 200,
       renderCell: (params) => (
-        <Button
-          component={Link}
-          to={`/feedback/${params.row.id}`} // Assuming id is the project ID
-          variant="contained"
-          color="primary"
-        >
-          Feedback
-        </Button>
+        <Link to={`/feedback/${params.row.id}`}>
+          <EditIcon
+            // Assuming id is the project ID
+            variant="contained"
+            color="primary"
+            sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}
+          />
+        </Link>
       )
     }
   ];
@@ -63,7 +63,24 @@ function ProjetSuivi() {
       <br />
       <DataGrid
         autoHeight
-        sx={{ width: '99%', margin: 'auto' }}
+        hideFooter
+        sx={{
+          width: '99%',
+          margin: 'auto',
+          '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: '#f5f5f5',
+            color: '#333',
+            fontSize: '18px',
+            fontWeight: 'bold'
+          },
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none'
+          },
+          '& .MuiDataGrid-cell': {
+            borderBottom: '1px solid #ddd',
+            fontSize: '16px' // Change the font size of the content here
+          }
+        }}
         rows={projects.filter((item) =>
           filterDate[0] !== '' && filterDate[1] !== ''
             ? new Date(moment(item.createdAt).format('YYYY-MM-DD')) >= new Date(filterDate[0]) &&

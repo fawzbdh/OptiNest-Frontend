@@ -110,12 +110,12 @@ function Projet() {
       field: 'createdAt',
       headerName: 'Date de creation',
       valueGetter: (value, row) => moment(row.createdAt).format('YYYY-MM-DD'),
-      width: 150
+      width: 200
     },
     {
       field: 'status',
       headerName: 'Statut',
-      width: 150
+      width: 200
     },
     {
       field: 'actions',
@@ -213,9 +213,25 @@ function Projet() {
         <RangePicker onChange={onChange} />
       </div>
       <DataGrid
+        hideFooter
         onEditCellChange={handleEditCellChange}
-        autoHeight
-        sx={{ width: '99%', margin: 'auto' }}
+        sx={{
+          width: '99%',
+          margin: 'auto',
+          '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: '#f5f5f5',
+            color: '#333',
+            fontSize: '18px',
+            fontWeight: 'bold'
+          },
+          '& .MuiDataGrid-columnSeparator': {
+            display: 'none'
+          },
+          '& .MuiDataGrid-cell': {
+            borderBottom: '1px solid #ddd',
+            fontSize: '16px' // Change the font size of the content here
+          }
+        }}
         rows={projects.filter((item) =>
           filterDate[0] !== '' && filterDate[1] !== ''
             ? new Date(moment(item.createdAt).format('YYYY-MM-DD')) >= new Date(filterDate[0]) &&

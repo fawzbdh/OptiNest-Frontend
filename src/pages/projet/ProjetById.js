@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjectById, updateProject } from 'store/reducers/projectReducer';
 import { createFichier, fetchFichiersByProjectId, updatePriority, updateQuantity } from 'store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
 import { useMediaQuery, Box, CircularProgress } from '@mui/material';
-
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ImporterFiles from 'pages/preparer/ImporterFiles';
 import { drawerWidth } from 'config';
 const presedent = ['Liste des projets', 'importer plus de pièces', ' Configurer les quantités'];
@@ -277,9 +277,11 @@ function ProjetById() {
           </Button>
         ) : (
           <Button
+            startIcon={<ArrowBackIcon />}
             style={{
               width: '50%',
               height: '70px',
+
               backgroundColor: '#4a4a4a',
               color: 'white',
               borderRadius: '0px',
@@ -296,6 +298,7 @@ function ProjetById() {
         )}
         <div style={{ width: '10%', background: 'repeating-linear-gradient(-75deg, #7ed321, #7ed321 49%, #4a4a4a 51%, #4a4a4a)' }}></div>
         <Button
+          endIcon={<ArrowForwardIcon />}
           style={{
             width: '50%',
             height: '70px',
