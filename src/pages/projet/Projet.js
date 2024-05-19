@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -6,16 +6,18 @@ import MainCard from 'components/MainCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProject, deleteProject, fetchprojectByUserId, updateProject } from '../../store/reducers/projectReducer';
 import moment from 'moment';
-import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
 import Swal from 'sweetalert2';
+import { DatePicker } from 'antd';
+const { RangePicker } = DatePicker;
 function Projet() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [filterDate, setFilterDate] = useState(['', '']);
 
   const { projects, loading, error } = useSelector((state) => state.project);
 
@@ -187,9 +189,8 @@ function Projet() {
   ];
 
   const onChange = (date, dateString) => {
-    console.log(date, dateString);
+    setFilterDate(dateString);
   };
-
   return (
     <MainCard>
       <Typography variant="h3">Projets</Typography>
@@ -201,13 +202,18 @@ function Projet() {
         >
           Nouveau projet
         </Button>
-        <DatePicker onChange={onChange} />
+        <RangePicker onChange={onChange} />
       </div>
       <DataGrid
         onEditCellChange={handleEditCellChange}
         autoHeight
         sx={{ width: '99%', margin: 'auto' }}
-        rows={projects}
+        rows={projects.filter((item) =>
+          filterDate[0] !== '' && filterDate[1] !== ''
+            ? new Date(moment(item.createdAt).format('YYYY-MM-DD')) >= new Date(filterDate[0]) &&
+              new Date(moment(item.createdAt).format('YYYY-MM-DD')) <= new Date(filterDate[1])
+            : true
+        )}
         columns={columns}
       />
     </MainCard>
