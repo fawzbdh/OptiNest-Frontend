@@ -46,7 +46,6 @@ function Feedback() {
   useEffect(() => {
     dispatch(getfeedback({ projectid: projectId }));
   }, [dispatch, projectId]);
-  console.log(feedbacks);
   const handleSubmit = () => {
     handleClose();
     !edit
@@ -67,6 +66,7 @@ function Feedback() {
             Swal.fire('Error', error.message, 'error');
           });
     setFeedback('');
+    setEdit(false);
   };
   const handleDeleteFeedback = (id) => {
     Swal.fire({

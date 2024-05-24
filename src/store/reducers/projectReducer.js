@@ -158,6 +158,7 @@ export const projectSlice = createSlice({
       .addCase(updateProject.fulfilled, (state, action) => {
         // Find the project by ID and update its data
         state.loading = false;
+        state.project = action.payload; // Set the current user as well
         // Update the user in the users array with the updated user data
         state.projects = state.projects.map((project) => (project.id === action.payload.id ? action.payload : project));
       })

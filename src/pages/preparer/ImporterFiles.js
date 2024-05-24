@@ -65,7 +65,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
       </Typography>
     );
   }
-
+  console.log(project);
   return (
     <div>
       <div
@@ -82,6 +82,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
             label="Nom du projet"
             variant="outlined"
             value={projectName || project?.name || ''}
+            defaultValue={projectName || project?.name || ''}
             onChange={(e) => setProjectName(e.target.value)}
             fullWidth
           />

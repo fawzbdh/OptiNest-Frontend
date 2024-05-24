@@ -16,10 +16,8 @@ function Placer() {
   const { projectId } = useParams();
   const [data, setData] = useState([]);
   const [margins, setMargins] = useState({
-    ecart_top: '',
-    ecart_bottom: '',
-    ecart_left: '',
-    ecart_right: ''
+    offset: '',
+    merge: ''
   });
 
   const containers = useSelector((state) => state.container.containers);
@@ -34,10 +32,8 @@ function Placer() {
   useEffect(() => {
     if (container) {
       setMargins({
-        ecart_top: container.ecart_top || '',
-        ecart_bottom: container.ecart_bottom || '',
-        ecart_left: container.ecart_left || '',
-        ecart_right: container.ecart_right || ''
+        offset: container.offset || '',
+        merge: container.merge || ''
       });
     }
   }, [container]);
@@ -106,10 +102,8 @@ function Placer() {
 
   const handleSubmit = async () => {
     const containerData = {
-      ecart_top: margins.ecart_top,
-      ecart_bottom: margins.ecart_bottom,
-      ecart_left: margins.ecart_left,
-      ecart_right: margins.ecart_right
+      offset: margins.offset,
+      merge: margins.merge
     };
 
     try {
@@ -266,65 +260,33 @@ function Placer() {
         </div>
         <div style={{ width: '100%', paddingTop: '10px' }}>
           <span style={{ color: 'grey', fontWeight: 'bold', fontSize: '30px' }}>Paramétres de placement :</span>
-          <div style={{ display: 'flex', gap: '5px' }}>
-            <div>
-              <p>Ecart haut</p>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <div style={{ width: '100%' }}>
+              <p>Offset</p>
               <OutlinedInput
                 id="outlined-adornment-top"
                 type="number"
-                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                 aria-describedby="outlined-weight-helper-text"
-                value={margins.ecart_top}
-                onChange={(e) => handleMarginChange('ecart_top', e.target.value)}
+                value={margins.offset}
+                onChange={(e) => handleMarginChange('offset', e.target.value)}
                 inputProps={{
                   'aria-label': 'top-margin'
                 }}
-                style={{ height: '40px' }}
+                style={{ height: '40px', width: '100%' }}
               />
             </div>
-            <div>
-              <p>Ecart bas</p>
+            <div style={{ width: '100%' }}>
+              <p>Mergs </p>
               <OutlinedInput
                 id="outlined-adornment-weight"
                 type="number"
-                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                 aria-describedby="outlined-weight-helper-text"
-                value={margins.ecart_bottom}
-                onChange={(e) => handleMarginChange('ecart_bottom', e.target.value)}
+                value={margins.merge}
+                onChange={(e) => handleMarginChange('merge', e.target.value)}
                 inputProps={{
                   'aria-label': 'weight'
                 }}
-                style={{ height: '40px' }}
-              />
-            </div>
-            <div>
-              <p>Ecart gauche</p>
-              <OutlinedInput
-                id="outlined-adornment-weight"
-                type="number"
-                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
-                aria-describedby="outlined-weight-helper-text"
-                value={margins.ecart_left}
-                onChange={(e) => handleMarginChange('ecart_left', e.target.value)}
-                inputProps={{
-                  'aria-label': 'weight'
-                }}
-                style={{ height: '40px' }}
-              />
-            </div>
-            <div>
-              <p>Ecart droite</p>
-              <OutlinedInput
-                id="outlined-adornment-weight"
-                type="number"
-                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
-                aria-describedby="outlined-weight-helper-text"
-                value={margins.ecart_right}
-                onChange={(e) => handleMarginChange('ecart_right', e.target.value)}
-                inputProps={{
-                  'aria-label': 'weight'
-                }}
-                style={{ height: '40px' }}
+                style={{ height: '40px', width: '100%' }}
               />
             </div>
           </div>
