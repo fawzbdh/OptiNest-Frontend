@@ -19,7 +19,7 @@ const suivent = ['Configurer les quantités', 'Configurer le placement', "Démar
 
 function ProjetById() {
   const { project, status } = useSelector((state) => state.project);
-  const { files, status: statusFiles } = useSelector((state) => state.fichier); // Get files from redux state
+  const { files } = useSelector((state) => state.fichier); // Get files from redux state
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0); // Track the number of uploaded files
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ function ProjetById() {
     setCurrent(project?.steps || 0);
   }, [project]);
 
-  if (status === 'loading' || statusFiles === 'loading') {
+  if (status === 'loading') {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
         <CircularProgress />
@@ -141,6 +141,7 @@ function ProjetById() {
           handleUpdateProjectName={handleUpdateProjectName}
           handleFileSelect={handleFileSelect}
           handleUploadedFiles={handleUploadedFiles}
+          projectId={projectId}
         />
       )}
       {current === 1 && (
