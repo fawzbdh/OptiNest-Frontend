@@ -194,6 +194,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
 ImporterFiles.propTypes = {
   handleFileSelect: PropTypes.func.isRequired,
   handleUploadedFiles: PropTypes.func.isRequired,
-  handleUpdateProjectName: PropTypes.func.isRequired
+  handleUpdateProjectName: PropTypes.func.isRequired,
+  projectId: PropTypes.string.isRequired
 };
 export default ImporterFiles;

@@ -9,12 +9,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createContainer, updateContainer, fetchContainerByProjectId } from 'store/reducers/containerReducer';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
+import { Select, MenuItem } from '@mui/material';
 import { createMultipleFormats, deleteFormat, fetchFormatByProjectId, updateMultipleFormats } from 'store/reducers/formatReducer';
 
 function Placer() {
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const [data, setData] = useState([]);
+  const [selectedOption, setSelectedOption] = useState('');
+
   const [margins, setMargins] = useState({
     offset: '',
     merge: ''
@@ -87,6 +90,7 @@ function Placer() {
     newData.splice(index, 1); // Remove the item at the specified index
     setData(newData);
   };
+
   const handleMarginChange = (direction, value) => {
     setMargins((prevState) => ({
       ...prevState,
@@ -193,27 +197,27 @@ function Placer() {
               />
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <OutlinedInput
-                  id="outlined-adornment-weight"
+                  id={`largeur-${index}`}
                   type="number"
                   value={item.largeur}
                   onChange={(e) => handleDimensionChange(index, 'largeur', e.target.value)}
                   endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                   aria-describedby="outlined-weight-helper-text"
                   inputProps={{
-                    'aria-label': 'weight'
+                    'aria-label': 'largeur'
                   }}
                   style={{ height: '40px' }}
                 />
                 <CloseIcon style={{ height: '40px' }} />
                 <OutlinedInput
-                  id="outlined-adornment-weight"
+                  id={`hauteur-${index}`}
                   type="number"
                   value={item.hauteur}
                   onChange={(e) => handleDimensionChange(index, 'hauteur', e.target.value)}
                   endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                   aria-describedby="outlined-weight-helper-text"
                   inputProps={{
-                    'aria-label': 'weight'
+                    'aria-label': 'hauteur'
                   }}
                   style={{ height: '40px' }}
                 />
@@ -264,13 +268,13 @@ function Placer() {
             <div style={{ width: '100%' }}>
               <p>Offset</p>
               <OutlinedInput
-                id="outlined-adornment-top"
+                id="offset"
                 type="number"
-                aria-describedby="outlined-weight-helper-text"
+                aria-describedby="offset-helper-text"
                 value={margins.offset}
                 onChange={(e) => handleMarginChange('offset', e.target.value)}
                 inputProps={{
-                  'aria-label': 'top-margin'
+                  'aria-label': 'offset'
                 }}
                 style={{ height: '40px', width: '100%' }}
               />
@@ -278,16 +282,33 @@ function Placer() {
             <div style={{ width: '100%' }}>
               <p>Mergs </p>
               <OutlinedInput
-                id="outlined-adornment-weight"
+                id="merge"
                 type="number"
-                aria-describedby="outlined-weight-helper-text"
+                aria-describedby="merge-helper-text"
                 value={margins.merge}
                 onChange={(e) => handleMarginChange('merge', e.target.value)}
                 inputProps={{
-                  'aria-label': 'weight'
+                  'aria-label': 'merge'
                 }}
                 style={{ height: '40px', width: '100%' }}
               />
+            </div>
+            <div style={{ width: '100%' }}>
+              <p>Orientation </p>
+
+              <Select
+                value={selectedOption}
+                onChange={(e) => setSelectedOption(e.target.value)}
+                displayEmpty
+                inputProps={{ 'aria-label': 'orientation' }}
+                style={{ height: '40px', width: '100%' }}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={false}>horizontal</MenuItem>
+                <MenuItem value={true}>vertical</MenuItem>
+              </Select>
             </div>
           </div>
           <Button

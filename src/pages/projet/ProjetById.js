@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjectById, updateProject } from 'store/reducers/projectReducer';
-import { createFichier, fetchFichiersByProjectId, updatePriority, updateQuantity } from 'store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
+import { fetchFichiersByProjectId, updatePriority, updateQuantity } from 'store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
 import { useMediaQuery, Box, CircularProgress } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ImporterFiles from 'pages/preparer/ImporterFiles';
@@ -58,17 +58,9 @@ function ProjetById() {
   };
 
   const handleNext = async () => {
-    if (current === 0 && project?.fileCount === 0 && uploadedFilesCount === 0) {
+    if (current === 0 && project?.fileCount === 0 && uploadedFilesCount === 0 && uploadedFiles.length === 0) {
       console.log('No files uploaded yet');
       return;
-    }
-    if (current === 0 && uploadedFilesCount > 0) {
-      try {
-        await dispatch(createFichier({ files: uploadedFiles, projectId: projectId }));
-      } catch (error) {
-        console.error('Error uploading files:', error);
-        return;
-      }
     }
 
     const nextStep = Math.min(current + 1, totalSteps);
