@@ -10,15 +10,19 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjectById, updateProject } from 'store/reducers/projectReducer';
 import { fetchFichiersByProjectId, updatePriority, updateQuantity } from 'store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
-import { useMediaQuery, Box, CircularProgress } from '@mui/material';
+import { Typography, useMediaQuery, Box, CircularProgress } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ImporterFiles from 'pages/preparer/ImporterFiles';
 import { drawerWidth } from 'config';
+import { createCsv } from 'store/reducers/csvReducer';
+import { createOptimisation } from 'store/reducers/optimisationReducer';
 const presedent = ['Liste des projets', 'importer plus de pièces', ' Configurer les quantités'];
 const suivent = ['Configurer les quantités', 'Configurer le placement', "Démarrer l'optimisation"];
 
 function ProjetById() {
   const { project, status } = useSelector((state) => state.project);
+  const statusOptimisation = useSelector((state) => state.optimisation.status);
+
   const { files } = useSelector((state) => state.fichier); // Get files from redux state
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0); // Track the number of uploaded files
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -47,6 +51,16 @@ function ProjetById() {
       </Box>
     );
   }
+  if (statusOptimisation == 'loading') {
+    return (
+      <Box m={2} display="flex" justifyContent="center" alignItems="center" flexDirection="column" height="80vh">
+        <Typography variant="h1">Traitement en cours</Typography>
+
+        <CircularProgress sx={{ margin: '20px' }} />
+        <Typography>veuillez patienter</Typography>
+      </Box>
+    );
+  }
 
   const handleUploadedFiles = (files) => {
     setUploadedFiles(files);
@@ -62,7 +76,13 @@ function ProjetById() {
       console.log('No files uploaded yet');
       return;
     }
-
+    if (current == 1) {
+      await dispatch(createCsv({ projectId: projectId }));
+    }
+    if (current == 2) {
+      await dispatch(createOptimisation({ projectId: projectId }));
+      await dispatch(updateProject({ id: projectId, status: 'Prêt' })); // Update project status to 'Prêt'
+    }
     const nextStep = Math.min(current + 1, totalSteps);
     setCurrent(nextStep);
     updateSteps(nextStep);

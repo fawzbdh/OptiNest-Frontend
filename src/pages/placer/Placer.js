@@ -19,8 +19,8 @@ function Placer() {
   const [selectedOption, setSelectedOption] = useState('');
 
   const [margins, setMargins] = useState({
-    offset: '',
-    merge: ''
+    x: '',
+    y: ''
   });
 
   const containers = useSelector((state) => state.container.containers);
@@ -35,9 +35,10 @@ function Placer() {
   useEffect(() => {
     if (container) {
       setMargins({
-        offset: container.offset || '',
-        merge: container.merge || ''
+        x: container.x || '',
+        y: container.y || ''
       });
+      setSelectedOption(container.vertical !== undefined ? container.vertical : '');
     }
   }, [container]);
 
@@ -106,8 +107,9 @@ function Placer() {
 
   const handleSubmit = async () => {
     const containerData = {
-      offset: margins.offset,
-      merge: margins.merge
+      x: margins.x,
+      y: margins.y,
+      vertical: selectedOption
     };
 
     try {
@@ -266,29 +268,29 @@ function Placer() {
           <span style={{ color: 'grey', fontWeight: 'bold', fontSize: '30px' }}>Paramétres de placement :</span>
           <div style={{ display: 'flex', gap: '20px' }}>
             <div style={{ width: '100%' }}>
-              <p>Offset</p>
+              <p>Ecart selon x</p>
               <OutlinedInput
-                id="offset"
+                id="x"
                 type="number"
-                aria-describedby="offset-helper-text"
-                value={margins.offset}
-                onChange={(e) => handleMarginChange('offset', e.target.value)}
+                aria-describedby="x-helper-text"
+                value={margins.x}
+                onChange={(e) => handleMarginChange('x', e.target.value)}
                 inputProps={{
-                  'aria-label': 'offset'
+                  'aria-label': 'x'
                 }}
                 style={{ height: '40px', width: '100%' }}
               />
             </div>
             <div style={{ width: '100%' }}>
-              <p>Mergs </p>
+              <p>Ecart selon y </p>
               <OutlinedInput
-                id="merge"
+                id="y"
                 type="number"
-                aria-describedby="merge-helper-text"
-                value={margins.merge}
-                onChange={(e) => handleMarginChange('merge', e.target.value)}
+                aria-describedby="y-helper-text"
+                value={margins.y}
+                onChange={(e) => handleMarginChange('y', e.target.value)}
                 inputProps={{
-                  'aria-label': 'merge'
+                  'aria-label': 'y'
                 }}
                 style={{ height: '40px', width: '100%' }}
               />

@@ -9,6 +9,7 @@ import moment from 'moment';
 import { DatePicker } from 'antd';
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 const { RangePicker } = DatePicker;
 
 function ProjetSuivi() {
@@ -36,17 +37,27 @@ function ProjetSuivi() {
     },
     {
       field: 'feedback',
-      headerName: 'Feedback',
+      headerName: 'Action',
       width: 200,
       renderCell: (params) => (
-        <Link to={`/feedback/${params.row.id}`}>
-          <EditIcon
-            // Assuming id is the project ID
-            variant="contained"
-            color="primary"
-            sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}
-          />
-        </Link>
+        <div>
+          <Link to={`/feedback/${params.row.id}`}>
+            <EditIcon
+              // Assuming id is the project ID
+              variant="contained"
+              color="primary"
+              sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}
+            />
+          </Link>
+          <Link to={`/couper/${params.row.id}`}>
+            <RemoveRedEyeIcon
+              // Assuming id is the project ID
+              variant="contained"
+              color="primary"
+              sx={{ color: 'green', marginLeft: '10px', cursor: 'pointer' }}
+            />
+          </Link>
+        </div>
       )
     }
   ];

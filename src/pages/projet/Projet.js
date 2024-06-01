@@ -162,6 +162,10 @@ function Projet() {
                 }
               }}
               startIcon={<CheckIcon />}
+              onClick={async () => {
+                await dispatch(updateProject({ id: params.row.id, steps: 3 }));
+                navigate('/projet/' + params.row.id);
+              }}
             >
               Résultat
             </Button>
@@ -180,6 +184,10 @@ function Projet() {
                   color: 'white',
                   border: '1px solid white'
                 }
+              }}
+              onClick={async () => {
+                await dispatch(updateProject({ id: params.row.id, steps: 2 }));
+                navigate('/projet/' + params.row.id);
               }}
               variant="outlined"
               startIcon={<EditIcon />}
@@ -217,6 +225,7 @@ function Projet() {
         onEditCellChange={handleEditCellChange}
         sx={{
           width: '99%',
+          padding: '20px',
           margin: 'auto',
           '& .MuiDataGrid-columnHeaders': {
             backgroundColor: '#f5f5f5',

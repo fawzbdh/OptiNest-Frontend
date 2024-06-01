@@ -34,6 +34,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
     handleFileSelect(newUploadedFiles);
     handleUploadedFiles(newUploadedFiles);
     await dispatch(createFichier({ files: newUploadedFiles, projectId: projectId }));
+
     setLoading(false);
   };
 
