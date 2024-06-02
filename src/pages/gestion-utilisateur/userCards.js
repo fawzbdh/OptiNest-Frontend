@@ -171,11 +171,17 @@ function UserCards({ users }) {
                     </div>
                   </div>
                   <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
-                    <Button style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }} type="submit" variant="outlined">
+                    <Button
+                      sx={{ textTransform: 'none' }}
+                      style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
+                      type="submit"
+                      variant="outlined"
+                    >
                       Modifier
                     </Button>
                     <Box mr={2}></Box>
                     <Button
+                      sx={{ textTransform: 'none' }}
                       style={{ borderRadius: '20px', backgroundColor: '#ED2E7E' }}
                       onClick={toggleDeleteDrawer}
                       variant="contained"

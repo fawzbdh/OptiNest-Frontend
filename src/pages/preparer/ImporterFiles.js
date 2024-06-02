@@ -18,22 +18,25 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
   const [projectName, setProjectName] = useState('');
   const [loading, setLoading] = useState(false);
   // const { status: statusfile } = useSelector((state) => state.fichier); // Get files from redux state
+  const { files } = useSelector((state) => state.fichier);
 
   const { project, status } = useSelector((state) => state.project);
   const handleFileChange = async (event) => {
+    setUploadedFiles([]);
+    setUploadedFilesCount(0);
+
     setLoading(true);
     const files = event.target.files;
     const fileArray = Array.from(files);
     // Concatenate the newly uploaded files with the existing ones
-    const newUploadedFiles = [...uploadedFiles, ...fileArray];
     // Update uploaded files count based on the total number of files
-    setUploadedFilesCount(newUploadedFiles.length);
+    setUploadedFilesCount(fileArray.length);
     // Update uploaded files array
-    setUploadedFiles(newUploadedFiles);
+    setUploadedFiles(fileArray);
     // Call the parent component's handleFileSelect function to update the count
-    handleFileSelect(newUploadedFiles);
-    handleUploadedFiles(newUploadedFiles);
-    await dispatch(createFichier({ files: newUploadedFiles, projectId: projectId }));
+    handleFileSelect(fileArray);
+    handleUploadedFiles(fileArray);
+    await dispatch(createFichier({ files: fileArray, projectId: projectId }));
 
     setLoading(false);
   };
@@ -46,16 +49,16 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
   };
   const handleDrop = (event) => {
     event.preventDefault();
+
     const files = event.dataTransfer.files;
     const fileArray = Array.from(files);
     // Concatenate the dropped files with the existing ones
-    const newUploadedFiles = [...uploadedFiles, ...fileArray];
     // Update uploaded files count based on the total number of files
-    setUploadedFilesCount(newUploadedFiles.length);
+    setUploadedFilesCount(fileArray.length);
     // Update uploaded files array
-    setUploadedFiles(newUploadedFiles);
+    setUploadedFiles(fileArray);
     // Call the parent component's handleFileSelect function to update the count
-    handleFileSelect(newUploadedFiles);
+    handleFileSelect(fileArray);
   };
 
   const handleRemoveFile = (index) => {
@@ -94,7 +97,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
             fullWidth
           />
         </div>
-        <Button variant="contained" style={{ marginLeft: '20px' }} onClick={handleUpdateName}>
+        <Button sx={{ textTransform: 'none' }} variant="contained" style={{ marginLeft: '20px' }} onClick={handleUpdateName}>
           Mettre à jour
         </Button>
       </div>
@@ -177,12 +180,12 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
                     <Chip sx={{ marginRight: '10px', borderRadius: '20px' }} label={`${loading ? uploadedFilesCount : 0} en cours`} />
                     <Chip
                       sx={{ marginRight: '10px', borderRadius: '20px', backgroundColor: '#D5F3B3' }}
-                      label={`${!loading ? uploadedFilesCount : 0} téléchargé(s)`}
+                      label={`${files.length} téléchargé(s)`}
                     />
                   </div>
                 </div>
                 <div style={{ padding: '20px' }}>
-                  <FileList files={uploadedFiles} onRemove={handleRemoveFile} />
+                  <FileList files={files} onRemove={handleRemoveFile} />
                 </div>
               </CardContent>
             </Card>

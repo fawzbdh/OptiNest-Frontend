@@ -81,6 +81,7 @@ function GestionUtilisateurs() {
         <Box m="8px 0 0 0" width="100%" height="80vh">
           <DashboardHeader title={'Gérer les utilisateurs'} />
           <Button
+            sx={{ textTransform: 'none' }}
             onClick={() => setIsDrawerOpen(true)}
             variant="contained"
             color="primary"
@@ -112,6 +113,7 @@ function GestionUtilisateurs() {
               </div>
               <Box m={2} sx={{ display: 'flex', justifyContent: 'end' }}>
                 <Button
+                  sx={{ textTransform: 'none' }}
                   onClick={() => setIsDrawerOpen(false)}
                   style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
                   variant="outlined"
@@ -120,6 +122,7 @@ function GestionUtilisateurs() {
                 </Button>
                 <Box mr={2}></Box>
                 <Button
+                  sx={{ textTransform: 'none' }}
                   onClick={handleSubmit}
                   style={{ borderRadius: '20px', backgroundColor: '#00BA88' }}
                   type="submit"

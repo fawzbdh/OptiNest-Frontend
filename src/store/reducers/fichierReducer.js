@@ -82,11 +82,27 @@ export const updatePriority = createAsyncThunk('fichier/updatePriority', async (
     return rejectWithValue(error.message);
   }
 });
+// Delete fichier async thunk
+export const deleteFichier = createAsyncThunk('fichier/deleteFichier', async (fileId, thunkAPI) => {
+  const { rejectWithValue } = thunkAPI;
+  try {
+    const token = localStorage.getItem('token');
+    await axios.delete(`${baseURL}/${fileId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return fileId;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 export const fichierSlice = createSlice({
   name: 'fichier',
   initialState: {
     files: [],
+
     status: null,
     error: null
   },
@@ -94,7 +110,11 @@ export const fichierSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createFichier.fulfilled, (state, action) => {
-        state.files.push(action.payload);
+        if (Array.isArray(action.payload)) {
+          state.files.push(...action.payload);
+        } else {
+          state.files.push(action.payload);
+        }
         state.status = 'success';
         state.error = null;
       })
@@ -150,6 +170,19 @@ export const fichierSlice = createSlice({
         state.error = null;
       })
       .addCase(updatePriority.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(deleteFichier.fulfilled, (state, action) => {
+        state.files = state.files.filter((file) => file.id !== action.payload);
+        state.status = 'success';
+        state.error = null;
+      })
+      .addCase(deleteFichier.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(deleteFichier.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });

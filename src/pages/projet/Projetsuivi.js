@@ -9,6 +9,9 @@ import moment from 'moment';
 import { DatePicker } from 'antd';
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+import InputAdornment from '@mui/material/InputAdornment';
+import { OutlinedInput } from '@mui/material';
+
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 const { RangePicker } = DatePicker;
 
@@ -22,8 +25,36 @@ function ProjetSuivi() {
   }, [dispatch]);
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 200 },
-    { field: 'name', headerName: 'Nom project', width: 200 },
+    {
+      field: 'name',
+      headerName: 'Nom projet',
+      width: 200,
+      editable: true,
+      renderCell: (params) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <OutlinedInput
+            type="text"
+            id={params.id}
+            name={params.field}
+            placeholder={'Nom du projet'}
+            value={params.value}
+            onChange={(event) => handleEditCellChange({ ...params, value: event.target.value })}
+            style={{
+              width: '100%',
+              height: '40px',
+              border: '1px solid white',
+              borderRadius: '5px',
+              padding: '5px'
+            }}
+            endAdornment={
+              <InputAdornment position="end">
+                <EditIcon sx={{ cursor: 'pointer', color: '#28DCE7', fontSize: '20px' }} onClick={() => handleEditCellChange(params)} />
+              </InputAdornment>
+            }
+          />
+        </div>
+      )
+    },
     {
       field: 'createdAt',
       headerName: 'Date de creation',
@@ -49,14 +80,16 @@ function ProjetSuivi() {
               sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}
             />
           </Link>
-          <Link to={`/couper/${params.row.id}`}>
-            <RemoveRedEyeIcon
-              // Assuming id is the project ID
-              variant="contained"
-              color="primary"
-              sx={{ color: 'green', marginLeft: '10px', cursor: 'pointer' }}
-            />
-          </Link>
+          {params.row.status !== 'Ebauche' && (
+            <Link to={`/couper/${params.row.id}`}>
+              <RemoveRedEyeIcon
+                // Assuming id is the project ID
+                variant="contained"
+                color="primary"
+                sx={{ color: 'green', marginLeft: '10px', cursor: 'pointer' }}
+              />
+            </Link>
+          )}
         </div>
       )
     }
@@ -74,7 +107,12 @@ function ProjetSuivi() {
       <br />
       <DataGrid
         autoHeight
-        hideFooter
+        pagination
+        initialState={{
+          ...projects.initialState,
+          pagination: { paginationModel: { pageSize: 5 } }
+        }}
+        pageSizeOptions={[5, 10, 25]}
         sx={{
           width: '99%',
           margin: 'auto',

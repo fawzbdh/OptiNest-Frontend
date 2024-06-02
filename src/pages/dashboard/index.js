@@ -103,6 +103,7 @@ const DashboardDefault = () => {
           <Grid item>
             <Stack direction="row" alignItems="center" spacing={0}>
               <Button
+                sx={{ textTransform: 'none' }}
                 size="small"
                 onClick={() => setSlot('month')}
                 color={slot === 'month' ? 'primary' : 'secondary'}
@@ -111,6 +112,7 @@ const DashboardDefault = () => {
                 Month
               </Button>
               <Button
+                sx={{ textTransform: 'none' }}
                 size="small"
                 onClick={() => setSlot('week')}
                 color={slot === 'week' ? 'primary' : 'secondary'}

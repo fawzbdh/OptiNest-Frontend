@@ -105,6 +105,7 @@ function Feedback() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'end' }}>
         <Button
+          sx={{ textTransform: 'none' }}
           variant="contained"
           style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#28DCE7', marginBottom: '10px' }}
           onClick={handleOpen}
@@ -130,7 +131,7 @@ function Feedback() {
               fullWidth
               style={{ marginTop: 16 }}
             />
-            <Button variant="contained" type="submit" style={{ marginTop: 16 }}>
+            <Button sx={{ textTransform: 'none' }} variant="contained" type="submit" style={{ marginTop: 16 }}>
               Submit Feedback
             </Button>
           </form>

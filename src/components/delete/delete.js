@@ -53,14 +53,19 @@ function DeleteItem({ toggleDeleteDrawer, toggleDrawer, selectedUser }) {
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         <Button
-          style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
+          style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60', textTransform: 'none' }}
           onClick={() => toggleDeleteDrawer()}
           variant="outlined"
         >
           Annuler
         </Button>
         <Box mr={2}></Box>
-        <Button style={{ borderRadius: '20px', backgroundColor: '#ED2E7E' }} variant="contained" color="primary" onClick={handleDelete}>
+        <Button
+          style={{ borderRadius: '20px', textTransform: 'none', backgroundColor: '#ED2E7E' }}
+          variant="contained"
+          color="primary"
+          onClick={handleDelete}
+        >
           Supprimer
         </Button>
       </Box>

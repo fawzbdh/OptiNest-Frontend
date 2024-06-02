@@ -6,12 +6,13 @@ import { Box, CircularProgress, Button, Card, CardContent, CardActions, Typograp
 
 function Couper() {
   const dispatch = useDispatch();
-  const { resultats, loading, error } = useSelector((state) => state.resultat);
+  const { resultats, loading } = useSelector((state) => state.resultat);
+  const { error } = useSelector((state) => state.optimisation);
+
   const { projectId } = useParams();
 
   useEffect(() => {
     dispatch(fetchResultatByProjectId(projectId));
-    
   }, [dispatch, projectId]);
 
   if (loading) {
@@ -24,9 +25,9 @@ function Couper() {
 
   if (error) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Typography variant="h6" color="error">
-          Error: {error}
+      <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+        <Typography variant="h4" color="error">
+          {error}
         </Typography>
       </Box>
     );
@@ -58,7 +59,13 @@ function Couper() {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button href={resultat.fichier_dxf} download={`file_${resultat.id}.dxf`} variant="contained" color="primary">
+              <Button
+                sx={{ textTransform: 'none' }}
+                href={resultat.fichier_dxf}
+                download={`file_${resultat.id}.dxf`}
+                variant="contained"
+                color="primary"
+              >
                 Download DXF File
               </Button>
             </CardActions>

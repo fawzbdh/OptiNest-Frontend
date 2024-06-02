@@ -34,6 +34,7 @@ const FirebaseSocial = () => {
     >
       <Button
         variant="outlined"
+        sx={{ textTransform: 'none' }}
         color="secondary"
         fullWidth={!matchDownSM}
         startIcon={<img src={Google} alt="Google" />}
@@ -44,6 +45,7 @@ const FirebaseSocial = () => {
       <Button
         variant="outlined"
         color="secondary"
+        sx={{ textTransform: 'none' }}
         fullWidth={!matchDownSM}
         startIcon={<img src={Twitter} alt="Twitter" />}
         onClick={twitterHandler}
@@ -53,6 +55,7 @@ const FirebaseSocial = () => {
       <Button
         variant="outlined"
         color="secondary"
+        sx={{ textTransform: 'none' }}
         fullWidth={!matchDownSM}
         startIcon={<img src={Facebook} alt="Facebook" />}
         onClick={facebookHandler}

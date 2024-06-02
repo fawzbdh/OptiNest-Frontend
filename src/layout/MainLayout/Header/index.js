@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { AppBar, Box, IconButton, Toolbar, useMediaQuery } from '@mui/material';
+import { Tooltip, AppBar, Box, IconButton, Toolbar, useMediaQuery } from '@mui/material';
 
 // project import
 import AppBarStyled from './AppBarStyled';
@@ -49,16 +49,30 @@ const Header = ({ open, handleDrawerToggle }) => {
           <Box onClick={() => navigate('/projet')}>
             <img src={Logo} alt="logo" style={{ maxWidth: 200 }} />
           </Box>
-          <IconButton sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: 2 } }} onClick={() => logOut()}>
-            <LogoutOutlined />
-          </IconButton>
+          <Tooltip style={{ backgroundColor: 'green' }} title="Déconnexion">
+            <IconButton sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: 2 } }} onClick={() => logOut()}>
+              <LogoutOutlined />
+            </IconButton>
+          </Tooltip>
         </Box>
       )}
       {user?.role === 'admin' && (
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
-          <IconButton sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: 2 } }} onClick={() => logOut()}>
-            <LogoutOutlined />
-          </IconButton>
+          <Tooltip
+            sx={{
+              backgroundColor: 'green',
+              color: 'white',
+              borderRadius: '4px',
+              padding: '8px',
+              fontSize: '14px',
+              fontWeight: 'bold'
+            }}
+            title="Déconnexion"
+          >
+            <IconButton sx={{ color: 'text.primary', bgcolor: iconBackColor, ml: { xs: 0, lg: 2 } }} onClick={() => logOut()}>
+              <LogoutOutlined />
+            </IconButton>
+          </Tooltip>
         </Box>
       )}
     </Toolbar>

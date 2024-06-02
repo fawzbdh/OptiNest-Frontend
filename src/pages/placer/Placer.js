@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import Button from '@mui/material/Button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -11,12 +11,16 @@ import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
 import { Select, MenuItem } from '@mui/material';
 import { createMultipleFormats, deleteFormat, fetchFormatByProjectId, updateMultipleFormats } from 'store/reducers/formatReducer';
+import { createOptimisation } from 'store/reducers/optimisationReducer';
+import { updateProject } from 'store/reducers/projectReducer';
+import EditIcon from '@mui/icons-material/Edit';
 
-function Placer() {
+const Placer = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const [data, setData] = useState([]);
   const [selectedOption, setSelectedOption] = useState('');
+  const [confirmationState, setConfirmationState] = useState({}); // Track the confirmation state for each file
 
   const [margins, setMargins] = useState({
     x: '',
@@ -71,6 +75,13 @@ function Placer() {
     newData[index].quantity = Math.max(1, newValue); // Ensure quantity is at least 1
     setData(newData);
   };
+  const handleDeleteFormat = (fileId, index) => {
+    handleDeleteRow(index);
+    setConfirmationState((prevState) => ({
+      ...prevState,
+      [fileId]: false
+    }));
+  };
 
   const handleDeleteRow = async (index) => {
     const formatToDelete = data[index];
@@ -79,9 +90,7 @@ function Placer() {
       // If the format has an ID, it means it exists in the database
       try {
         await dispatch(deleteFormat(formatToDelete.id));
-        Swal.fire('Format deleted successfully!', '', 'success');
       } catch (error) {
-        Swal.fire('Error:', error.message, 'error');
         return;
       }
     }
@@ -113,28 +122,18 @@ function Placer() {
     };
 
     try {
+      // Update or create container
       if (container) {
         await dispatch(updateContainer({ id: container.id, ...containerData }));
-        Swal.fire('Container updated successfully!', '', 'success');
       } else {
         await dispatch(createContainer({ id: projectId, ...containerData }));
-        Swal.fire('Container created successfully!', '', 'success');
       }
-    } catch (error) {
-      Swal.fire('Error:', error.message, 'error');
-    }
 
-    try {
+      // Create or update formats
       if (data.length > 0) {
         const existingFormatIds = formats.map((format) => format.id);
         const newFormats = data.filter((format) => !existingFormatIds.includes(format.id));
         const updateFormats = data.filter((format) => existingFormatIds.includes(format.id));
-        console.log('**********************************');
-        console.log(updateFormats);
-        console.log('**********************************');
-
-        console.log(newFormats);
-        console.log('**********************************');
 
         if (newFormats.length > 0) {
           await dispatch(createMultipleFormats({ projectId, formatsData: newFormats }));
@@ -143,20 +142,39 @@ function Placer() {
         if (updateFormats.length > 0) {
           await dispatch(updateMultipleFormats(updateFormats));
         }
-
-        Swal.fire('Formats processed successfully!', '', 'success');
       }
+
+      // Create optimisation
+      await dispatch(createOptimisation({ projectId: projectId }));
+
+      // Update project status to 'Prêt'
+      await dispatch(updateProject({ id: projectId, status: 'Prêt' }));
+
+      // Success message
     } catch (error) {
-      Swal.fire('Error:', error.message, 'error');
+      // Display error message
+      console.error('Error:', error.message);
+      Swal.fire('Error', 'An error occurred. Please try again later.', 'error');
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    handleSubmit: handleSubmit
+  }));
+
+  const toggleConfirmDelete = (fileId) => {
+    setConfirmationState((prevState) => ({
+      ...prevState,
+      [fileId]: !prevState[fileId]
+    }));
+  };
   return (
     <div>
       <Button
         variant="contained"
         style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#28DCE7', marginBottom: '10px' }}
         onClick={addSheet}
+        sx={{ textTransform: 'none' }}
       >
         <AddCircleIcon />
         {'    '} Ajouter Format
@@ -192,6 +210,13 @@ function Placer() {
             >
               <OutlinedInput
                 id={`name-${index}`}
+                type="text"
+                placeholder={'Nom du tole'}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <EditIcon sx={{ cursor: 'pointer', color: '#28DCE7', fontSize: '20px' }} />
+                  </InputAdornment>
+                }
                 aria-describedby="outlined-weight-helper-text"
                 value={item.name}
                 onChange={(e) => handleNameChange(index, e.target.value)}
@@ -200,7 +225,6 @@ function Placer() {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <OutlinedInput
                   id={`largeur-${index}`}
-                  type="number"
                   value={item.largeur}
                   onChange={(e) => handleDimensionChange(index, 'largeur', e.target.value)}
                   endAdornment={<InputAdornment position="end">mm</InputAdornment>}
@@ -259,7 +283,26 @@ function Placer() {
                 </button>
               </div>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                <DeleteIcon onClick={() => handleDeleteRow(index)} style={{ cursor: 'pointer', color: 'red' }} />
+                {!confirmationState[item.id] ? (
+                  <DeleteIcon onClick={() => toggleConfirmDelete(item.id)} style={{ cursor: 'pointer', color: 'red' }} />
+                ) : (
+                  <>
+                    <Button
+                      sx={{ cursor: 'pointer', color: 'grey', borderRadius: '20px' }}
+                      variant="outlined"
+                      onClick={() => toggleConfirmDelete(item.id)}
+                    >
+                      Annuler
+                    </Button>
+                    <Button
+                      sx={{ cursor: 'pointer', color: 'white', backgroundColor: 'red', borderRadius: '20px' }}
+                      variant="contained"
+                      onClick={() => handleDeleteFormat(item.id, index)}
+                    >
+                      Confirmer
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -274,6 +317,7 @@ function Placer() {
                 type="number"
                 aria-describedby="x-helper-text"
                 value={margins.x}
+                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                 onChange={(e) => handleMarginChange('x', e.target.value)}
                 inputProps={{
                   'aria-label': 'x'
@@ -288,6 +332,7 @@ function Placer() {
                 type="number"
                 aria-describedby="y-helper-text"
                 value={margins.y}
+                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
                 onChange={(e) => handleMarginChange('y', e.target.value)}
                 inputProps={{
                   'aria-label': 'y'
@@ -313,18 +358,10 @@ function Placer() {
               </Select>
             </div>
           </div>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#1976d2', marginBottom: '10px' }}
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
         </div>
       </div>
     </div>
   );
-}
+});
 
 export default Placer;

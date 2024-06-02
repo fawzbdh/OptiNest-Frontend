@@ -16,7 +16,7 @@ export const createOptimisation = createAsyncThunk('optimisation/createOptimisat
     const data = res.data.data;
     return data;
   } catch (error) {
-    return rejectWithValue(error.message);
+    return rejectWithValue(error.response.data.message);
   }
 });
 

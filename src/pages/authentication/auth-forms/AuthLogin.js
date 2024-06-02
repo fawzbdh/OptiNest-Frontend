@@ -310,6 +310,7 @@ function AuthLogin() {
                             type="submit"
                             variant="contained"
                             color="primary"
+                            textTransform="none"
                             fullWidth
                             disabled={isSubmitting}
                             sx={{

@@ -13,15 +13,41 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
 import Swal from 'sweetalert2';
 import { DatePicker } from 'antd';
-import { Box, CircularProgress } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+
+import { OutlinedInput, Box, CircularProgress } from '@mui/material';
 const { RangePicker } = DatePicker;
 function Projet() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [filterDate, setFilterDate] = useState(['', '']);
+  const [confirmationState, setConfirmationState] = useState({}); // Track the confirmation state for each file
 
   const { projects, loading, error } = useSelector((state) => state.project);
-
+  const handleDeleteProjet = (fileId) => {
+    dispatch(deleteProject(fileId))
+      .unwrap()
+      .then((data) => {
+        console.log('Projet supprimé :', data);
+        // Handle success
+        Swal.fire('Succès', 'Projet supprimé avec succès !', 'success');
+      })
+      .catch((error) => {
+        // Handle error
+        let errorMessage = 'Une erreur est survenue lors de la suppression du projet.';
+        if (error.errors && error.errors.length > 0) {
+          errorMessage = error.errors[0].msg;
+        }
+        if (error.message) {
+          errorMessage = error.message;
+        }
+        Swal.fire('Erreur', errorMessage, 'error');
+      });
+    setConfirmationState((prevState) => ({
+      ...prevState,
+      [fileId]: false
+    }));
+  };
   const handleNouveauProjetClick = () => {
     dispatch(createProject({})) // Dispatch the createProject action
       .then((data) => {
@@ -51,39 +77,11 @@ function Projet() {
       });
   };
 
-  const handleDeleteProject = (id) => {
-    Swal.fire({
-      title: 'Confirmation',
-      text: 'Êtes-vous sûr de vouloir supprimer ce projet ?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Oui, supprimer !'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        console.log('Projet supprimé :', id);
-        // Dispatch deleteProject action
-        dispatch(deleteProject(id))
-          .unwrap()
-          .then((data) => {
-            console.log('Projet supprimé :', data);
-            // Handle success
-            Swal.fire('Succès', 'Projet supprimé avec succès !', 'success');
-          })
-          .catch((error) => {
-            // Handle error
-            let errorMessage = 'Une erreur est survenue lors de la suppression du projet.';
-            if (error.errors && error.errors.length > 0) {
-              errorMessage = error.errors[0].msg;
-            }
-            if (error.message) {
-              errorMessage = error.message;
-            }
-            Swal.fire('Erreur', errorMessage, 'error');
-          });
-      }
-    });
+  const toggleConfirmDelete = (fileId) => {
+    setConfirmationState((prevState) => ({
+      ...prevState,
+      [fileId]: !prevState[fileId]
+    }));
   };
 
   if (loading === true) {
@@ -98,12 +96,35 @@ function Projet() {
     return navigate('/login');
   }
   const columns = [
-    { field: 'id', headerName: 'ID', width: 150 },
     {
       field: 'name',
       headerName: 'Nom projet',
       width: 200,
-      editable: true
+      editable: true,
+      renderCell: (params) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <OutlinedInput
+            type="text"
+            id={params.id}
+            name={params.field}
+            placeholder={'Nom du projet'}
+            value={params.value}
+            onChange={(event) => handleEditCellChange({ ...params, value: event.target.value })}
+            style={{
+              width: '100%',
+              height: '40px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              padding: '5px'
+            }}
+            endAdornment={
+              <InputAdornment position="end">
+                <EditIcon sx={{ cursor: 'pointer', color: '#28DCE7', fontSize: '20px' }} onClick={() => handleEditCellChange(params)} />
+              </InputAdornment>
+            }
+          />
+        </div>
+      )
     },
 
     {
@@ -135,6 +156,7 @@ function Projet() {
                 backgroundColor: 'white',
                 color: '#28DCE7',
                 border: '1px solid #28DCE7',
+                textTransform: 'none',
                 '&:hover': {
                   backgroundColor: '#28DCE7',
                   color: 'white',
@@ -153,6 +175,7 @@ function Projet() {
                 marginRight: '10px',
                 borderRadius: '20px',
                 backgroundColor: 'white',
+                textTransform: 'none',
                 color: '#28DCE7',
                 border: '1px solid #28DCE7',
                 '&:hover': {
@@ -177,6 +200,7 @@ function Projet() {
                 marginRight: '10px',
                 borderRadius: '20px',
                 backgroundColor: 'white',
+                textTransform: 'none',
                 color: '#C1B100',
                 border: '1px solid #C1B100',
                 '&:hover': {
@@ -195,10 +219,29 @@ function Projet() {
               Editer
             </Button>
           )}
-          <DeleteIcon
-            sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer', alignSelf: 'self' }}
-            onClick={() => handleDeleteProject(params.id)}
-          />
+          {!confirmationState[params.row.id] ? (
+            <DeleteIcon
+              sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer', alignSelf: 'self' }}
+              onClick={() => toggleConfirmDelete(params.row.id)}
+            />
+          ) : (
+            <>
+              <Button
+                sx={{ cursor: 'pointer', textTransform: 'none', color: 'grey', borderRadius: '20px' }}
+                variant="outlined"
+                onClick={() => toggleConfirmDelete(params.row.id)}
+              >
+                Annuler
+              </Button>
+              <Button
+                sx={{ cursor: 'pointer', textTransform: 'none', color: 'white', backgroundColor: 'red', borderRadius: '20px' }}
+                variant="contained"
+                onClick={() => handleDeleteProjet(params.row.id)}
+              >
+                Confirmer
+              </Button>
+            </>
+          )}
         </div>
       )
     }
@@ -213,7 +256,7 @@ function Projet() {
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button
           onClick={handleNouveauProjetClick}
-          sx={{ borderRadius: '20px', backgroundColor: '#28DCE7', marginTop: '20px', marginBottom: '20px' }}
+          sx={{ borderRadius: '20px', textTransform: 'none', backgroundColor: '#28DCE7', marginTop: '20px', marginBottom: '20px' }}
           variant="contained"
         >
           Nouveau projet
@@ -221,8 +264,13 @@ function Projet() {
         <RangePicker onChange={onChange} />
       </div>
       <DataGrid
-        hideFooter
         onEditCellChange={handleEditCellChange}
+        pagination
+        initialState={{
+          ...projects.initialState,
+          pagination: { paginationModel: { pageSize: 5 } }
+        }}
+        pageSizeOptions={[5, 10, 25]}
         sx={{
           width: '99%',
           padding: '20px',
