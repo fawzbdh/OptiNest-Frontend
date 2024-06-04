@@ -15,7 +15,11 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ImporterFiles from 'pages/preparer/ImporterFiles';
 import { drawerWidth } from 'config';
 import { createCsv } from 'store/reducers/csvReducer';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import IconButton from '@mui/material/IconButton';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 const suivent = ['Configurer les quantités', 'Configurer le placement', "Démarrer l'optimisation"];
 
@@ -182,19 +186,23 @@ function ProjetById() {
       {current === 1 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div
-            style={{ width: '100%', borderRight: '1px solid gray', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}
+            style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}
           >
-            <p style={{ fontSize: '20px', fontWeight: '600', marginLeft: '10px', color: 'gray', paddingRight: '100px' }}>Piéces </p>
+            <p style={{ fontSize: '20px', fontWeight: '600', marginLeft: '10px', color: 'black', paddingRight: '100px' }}>Pièces </p>
             <Button
               startIcon={<FileUploadIcon />}
-              sx={{ cursor: 'pointer', color: 'grey', borderRadius: '20px', textTransform: 'none' }}
+              sx={{ cursor: 'pointer', color: 'grey', borderRadius: '20px', border: '2px solid #ccc', textTransform: 'none',fontWeight:'600','&:hover': {
+                backgroundColor: '#FFF',
+                color: 'grey',
+                border: '2px solid grey'
+              }}}
               variant="outlined"
               onClick={handlePrev}
             >
               Importer plus de pièces
             </Button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', borderBottom: '1px solid gray' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', borderBottom: '1px solid gray' ,borderTop:'1px solid gray'}}>
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Image</p>
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Quantité</p>
             <p style={{ fontSize: '18px', fontWeight: '700' }}>Largeur</p>
@@ -208,58 +216,65 @@ function ProjetById() {
                 display: 'grid',
                 gridTemplateColumns: 'repeat(5, 1fr)',
                 gap: '10px',
-                alignItems: 'center',
-                borderBottom: '1px solid gray'
+                alignItems: 'center'
               }}
             >
               <img src={item.path} alt={`dxf`} style={{ width: '200px', height: '150px' }} />
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
                 {!confirmationState[item.id] ? (
                   <>
-                    <button
-                      onClick={() => handleQuantityChange(item.id, Math.max(1, item.quantity - 1))}
-                      style={{
-                        cursor: 'pointer',
-                        background: 'rgb(18, 204, 4)',
-                        color: 'white',
-                        border: '0',
-                        fontSize: '18px',
-                        borderRadius: '5px',
-                        width: '25px',
-                        height: '25px'
-                      }}
-                    >
-                      -
-                    </button>
+                  <IconButton
+  onClick={() => handleQuantityChange(item.id, Math.max(1, item.quantity - 1))}
+  sx={{ color: '#FF5722' }} // Styling pour le bouton "-" (diminuer)
+>
+  <RemoveCircleOutlineIcon />
+</IconButton>
                     <span>{item.quantity}</span>
-                    <button
-                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                      style={{
-                        cursor: 'pointer',
-                        background: 'rgb(18, 204, 4)',
-                        color: 'white',
-                        border: '0',
-                        fontSize: '18px',
-                        borderRadius: '5px',
-                        width: '25px',
-                        height: '25px'
-                      }}
-                    >
-                      +
-                    </button>
-                    <DeleteIcon sx={{ cursor: 'pointer', color: 'red' }} onClick={() => toggleConfirmDelete(item.id)}></DeleteIcon>
+                    <IconButton
+  onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+  sx={{ color: '#4CAF50' }} // Styling pour le bouton "+" (augmenter)
+>
+  <AddCircleOutlineIcon />
+</IconButton>
+                    <DeleteOutlineOutlinedIcon sx={{ cursor: 'pointer', color: 'red' }} onClick={() => toggleConfirmDelete(item.id)}></DeleteOutlineOutlinedIcon>
                   </>
                 ) : (
                   <>
                     <Button
-                      sx={{ cursor: 'pointer', color: 'grey', borderRadius: '20px' }}
+                      sx={{ cursor: 'pointer', textTransform: 'none',    marginRight: '10px',
+                borderRadius: '20px',
+                backgroundColor: 'white',
+                textTransform: 'none',
+                color: 'grey',
+                border: '2px solid grey',
+                marginTop:'5px',
+                fontWeight:600,
+
+                '&:hover': {
+                  backgroundColor: '#ffff',
+                  color: 'grey',
+                  border: '2px solid grey'
+                } }}
                       variant="outlined"
                       onClick={() => toggleConfirmDelete(item.id)}
                     >
                       Annuler
                     </Button>
                     <Button
-                      sx={{ cursor: 'pointer', color: 'white', backgroundColor: 'red', borderRadius: '20px' }}
+                      sx={{ cursor: 'pointer', textTransform: 'none'  , marginLeft: '0px',
+                borderRadius: '30px',
+                backgroundColor: '#d61717',
+                textTransform: 'none',
+                color: '#ffff',
+                border: '2px solid #d61717',
+                marginTop:'5px',
+                fontWeight:600,
+
+                '&:hover': {
+                  backgroundColor: '#e22222',
+                  color: 'white',
+                  border: '2px solid #e22222'
+                } }}
                       variant="contained"
                       onClick={() => handleDeleteFile(item.id)}
                     >
@@ -271,37 +286,20 @@ function ProjetById() {
               <div>{item.width && item.width.toFixed(2)}</div>
               <div>{item.height && item.height.toFixed(2)}</div>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                <button
-                  onClick={() => handlePriorityChange(item.id, Math.max(0, item.priority - 1))}
-                  style={{
-                    cursor: 'pointer',
-                    background: 'rgb(18, 204, 4)',
-                    color: 'white',
-                    border: '0',
-                    fontSize: '18px',
-                    borderRadius: '5px',
-                    width: '25px',
-                    height: '25px'
-                  }}
-                >
-                  -
-                </button>
+                
+                  <IconButton
+  onClick={() => handlePriorityChange(item.id, Math.max(0, item.priority - 1))}
+  sx={{ color: '#FF5722' }} // Styling pour le bouton "-" (diminuer)
+>
+  <RemoveCircleOutlineIcon />
+</IconButton>
                 <span>{item.priority}</span>
-                <button
-                  onClick={() => handlePriorityChange(item.id, item.priority + 1)}
-                  style={{
-                    cursor: 'pointer',
-                    background: 'rgb(18, 204, 4)',
-                    color: 'white',
-                    border: '0',
-                    fontSize: '18px',
-                    borderRadius: '5px',
-                    width: '25px',
-                    height: '25px'
-                  }}
-                >
-                  +
-                </button>
+                  <IconButton
+  onClick={() => handlePriorityChange(item.id, item.priority + 1)}
+  sx={{ color: '#4CAF50' }} // Styling pour le bouton "+" (augmenter)
+>
+  <AddCircleOutlineIcon />
+</IconButton>
               </div>
             </div>
           ))}
@@ -348,7 +346,7 @@ function ProjetById() {
             }}
             onClick={() => navigate('/projet')}
           >
-            List de projet
+            Liste des projets
           </Button>
         ) : (
           <Button
@@ -363,7 +361,8 @@ function ProjetById() {
               backgroundColor: '#4a4a4a',
               color: 'white',
               borderRadius: '0px',
-              fontSize: '18px',
+              fontSize: '17px',
+              fontWeight:500,
               textTransform: 'none',
               '&:hover': {
                 backgroundColor: '#4a4a4a',
@@ -378,7 +377,7 @@ function ProjetById() {
         )}
 
         {current !== 3 && (
-          <div style={{ width: '10%', background: 'repeating-linear-gradient(-75deg, #7ed321, #7ed321 49%, #4a4a4a 51%, #4a4a4a)' }}></div>
+          <div style={{ width: '10%', background: 'repeating-linear-gradient(-75deg,#358e93d7, #358e93d7 49%, #4a4a4a 51%, #4a4a4a)' }}></div>
         )}
         {current !== 3 && (
           <Button
@@ -387,20 +386,17 @@ function ProjetById() {
               width: '50%',
               height: '70px',
               borderRadius: '0px',
-              backgroundColor: '#7ED321',
+              backgroundColor: ' #358e93d7 ',
               color: 'white',
-              border: '1px solid #7ED321',
+              fontWeight:500,
+              
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-end',
               paddingRight: '20px',
-              fontSize: '18px',
+              fontSize: '17px',
               textTransform: 'none',
-              '&:hover': {
-                backgroundColor: '#7ED321',
-                color: 'white',
-                border: '1px solid white'
-              }
+             
             }}
             variant="contained"
             onClick={handleNext}

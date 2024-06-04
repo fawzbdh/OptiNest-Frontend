@@ -52,7 +52,7 @@ function Feedback() {
       ? dispatch(addfeedback({ ProjectId: projectId, description: feedback, UserId: user.id }))
           .unwrap()
           .then(() => {
-            Swal.fire('Success', 'Feedback submitted successfully', 'success');
+            Swal.fire('Success', 'Rapport submitted successfully', 'success');
           })
           .catch((error) => {
             Swal.fire('Error', error.message, 'error');
@@ -60,7 +60,7 @@ function Feedback() {
       : dispatch(updateFeedback({ id: edititem.id, feedbackData: { ...edititem, description: feedback } }))
           .unwrap()
           .then(() => {
-            Swal.fire('Success', 'Feedback updated successfully', 'success');
+            Swal.fire('Success', 'Rapport updated successfully', 'success');
           })
           .catch((error) => {
             Swal.fire('Error', error.message, 'error');
@@ -71,7 +71,7 @@ function Feedback() {
   const handleDeleteFeedback = (id) => {
     Swal.fire({
       title: 'Confirmation',
-      text: 'Êtes-vous sûr de vouloir supprimer ce feedback ?',
+      text: 'Êtes-vous sûr de vouloir supprimer ce rapport ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -79,17 +79,17 @@ function Feedback() {
       confirmButtonText: 'Oui, supprimer !'
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log('feedack supprimé :', id);
+        console.log('Rapport supprimé :', id);
         // Dispatch deleteProject action
         dispatch(deletefeedack(id))
           .unwrap()
           .then((data) => {
             console.log('feedack supprimé :', data);
-            Swal.fire('Succès', 'Feedback supprimé avec succès !', 'success');
+            Swal.fire('Succès', 'Rapport supprimé avec succès !', 'success');
           })
           .catch((error) => {
             // Handle error
-            let errorMessage = 'Une erreur est survenue lors de la suppression du feedack.';
+            let errorMessage = 'Une erreur est survenue lors de la suppression du rapport.';
             if (error.errors && error.errors.length > 0) {
               errorMessage = error.errors[0].msg;
             }
@@ -107,22 +107,22 @@ function Feedback() {
         <Button
           sx={{ textTransform: 'none' }}
           variant="contained"
-          style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#28DCE7', marginBottom: '10px' }}
+          style={{ marginTop: '20px', borderRadius: '30px', backgroundColor: '#1cbac2', marginBottom: '10px',fontWeight:600,fontSize:"15px" }}
           onClick={handleOpen}
         >
           <AddCircleIcon />
-          Ajouter un Feedback
+          Ajouter un rapport
         </Button>
       </div>
       {/* modale  */}
       <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            <b> {edit ? 'Modifier feedback' : 'Ajouter un nouveau feedback'}</b>
+            <b> {edit ? 'Modifier le rapport' : 'Générer un rapport de performance et utilisation'}</b>
           </Typography>
           <form onSubmit={handleSubmit}>
             <TextField
-              label="Your Feedback"
+              label="Ecrivez ici le rapport de performance "
               multiline
               rows={4}
               variant="outlined"
@@ -131,8 +131,8 @@ function Feedback() {
               fullWidth
               style={{ marginTop: 16 }}
             />
-            <Button sx={{ textTransform: 'none' }} variant="contained" type="submit" style={{ marginTop: 16 }}>
-              Submit Feedback
+            <Button sx={{ textTransform: 'none' }} variant="contained" type="submit" style={{ marginTop: 16 ,backgroundColor: '#1cbac2',fontWeight:600}}>
+            Enregistrer
             </Button>
           </form>
         </Box>
@@ -142,7 +142,7 @@ function Feedback() {
           <MainCard key={item.id}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p>Feedback by: {item?.User?.username}</p>
+                <p>Rapport généré par: {item?.User?.username}</p>
                 <p>{item.description}</p>
               </div>
               <div style={{ width: '50px', display: 'flex', flexDirection: 'column', gap: '5px' }}>

@@ -1,30 +1,56 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
-import Button from '@mui/material/Button';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
+import {
+  Button,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+  Box,
+  Typography,
+  Grid,
+  Select,
+  MenuItem,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+} from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useDispatch, useSelector } from 'react-redux';
-import { createContainer, updateContainer, fetchContainerByProjectId } from 'store/reducers/containerReducer';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { Select, MenuItem } from '@mui/material';
-import { createMultipleFormats, deleteFormat, fetchFormatByProjectId, updateMultipleFormats } from 'store/reducers/formatReducer';
+import {
+  createContainer,
+  updateContainer,
+  fetchContainerByProjectId,
+} from 'store/reducers/containerReducer';
+import {
+  createMultipleFormats,
+  deleteFormat,
+  fetchFormatByProjectId,
+  updateMultipleFormats,
+} from 'store/reducers/formatReducer';
 import { createOptimisation } from 'store/reducers/optimisationReducer';
 import { updateProject } from 'store/reducers/projectReducer';
-import EditIcon from '@mui/icons-material/Edit';
+import { Padding } from '../../../node_modules/@mui/icons-material/index';
 
 const Placer = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const { projectId } = useParams();
   const [data, setData] = useState([]);
   const [selectedOption, setSelectedOption] = useState('');
-  const [confirmationState, setConfirmationState] = useState({}); // Track the confirmation state for each file
+  const [confirmationState, setConfirmationState] = useState({});
 
   const [margins, setMargins] = useState({
     x: '',
-    y: ''
+    y: '',
   });
 
   const containers = useSelector((state) => state.container.containers);
@@ -40,7 +66,7 @@ const Placer = React.forwardRef((props, ref) => {
     if (container) {
       setMargins({
         x: container.x || '',
-        y: container.y || ''
+        y: container.y || '',
       });
       setSelectedOption(container.vertical !== undefined ? container.vertical : '');
     }
@@ -54,7 +80,7 @@ const Placer = React.forwardRef((props, ref) => {
           name: format.nom,
           hauteur: format.hauteur,
           largeur: format.largeur,
-          quantity: format.quantity
+          quantity: format.quantity,
         }))
       );
     }
@@ -72,14 +98,15 @@ const Placer = React.forwardRef((props, ref) => {
 
   const handleQuantityChange = (index, newValue) => {
     const newData = [...data];
-    newData[index].quantity = Math.max(1, newValue); // Ensure quantity is at least 1
+    newData[index].quantity = Math.max(1, newValue);
     setData(newData);
   };
+
   const handleDeleteFormat = (fileId, index) => {
     handleDeleteRow(index);
     setConfirmationState((prevState) => ({
       ...prevState,
-      [fileId]: false
+      [index]: false,
     }));
   };
 
@@ -87,7 +114,6 @@ const Placer = React.forwardRef((props, ref) => {
     const formatToDelete = data[index];
 
     if (formatToDelete.id) {
-      // If the format has an ID, it means it exists in the database
       try {
         await dispatch(deleteFormat(formatToDelete.id));
       } catch (error) {
@@ -95,16 +121,15 @@ const Placer = React.forwardRef((props, ref) => {
       }
     }
 
-    // Remove the item from local state
     const newData = [...data];
-    newData.splice(index, 1); // Remove the item at the specified index
+    newData.splice(index, 1);
     setData(newData);
   };
 
   const handleMarginChange = (direction, value) => {
     setMargins((prevState) => ({
       ...prevState,
-      [direction]: value
+      [direction]: value,
     }));
   };
 
@@ -118,18 +143,16 @@ const Placer = React.forwardRef((props, ref) => {
     const containerData = {
       x: margins.x,
       y: margins.y,
-      vertical: selectedOption
+      vertical: selectedOption,
     };
 
     try {
-      // Update or create container
       if (container) {
         await dispatch(updateContainer({ id: container.id, ...containerData }));
       } else {
         await dispatch(createContainer({ id: projectId, ...containerData }));
       }
 
-      // Create or update formats
       if (data.length > 0) {
         const existingFormatIds = formats.map((format) => format.id);
         const newFormats = data.filter((format) => !existingFormatIds.includes(format.id));
@@ -144,223 +167,216 @@ const Placer = React.forwardRef((props, ref) => {
         }
       }
 
-      // Create optimisation
       await dispatch(createOptimisation({ projectId: projectId }));
 
-      // Update project status to 'Prêt'
       await dispatch(updateProject({ id: projectId, status: 'Prêt' }));
-
-      // Success message
     } catch (error) {
-      // Display error message
       console.error('Error:', error.message);
       Swal.fire('Error', 'An error occurred. Please try again later.', 'error');
     }
   };
 
   useImperativeHandle(ref, () => ({
-    handleSubmit: handleSubmit
+    handleSubmit: handleSubmit,
   }));
 
-  const toggleConfirmDelete = (fileId) => {
+  const toggleConfirmDelete = (index) => {
     setConfirmationState((prevState) => ({
       ...prevState,
-      [fileId]: !prevState[fileId]
+      [index]: !prevState[index],
     }));
   };
+
   return (
-    <div>
+    <Box sx={{ width: '100%', p: 1 }}>
+      <Typography variant="h4" fontWeight="bold" color="black" sx={{ flexGrow: 1 }}>
+        Format
+      </Typography>
       <Button
         variant="contained"
-        style={{ marginTop: '20px', borderRadius: '15px', backgroundColor: '#28DCE7', marginBottom: '10px' }}
+        startIcon={<AddCircleOutlineIcon />}
         onClick={addSheet}
-        sx={{ textTransform: 'none' }}
+        sx={{ mb: 1, mt: 1, borderRadius: '30px', bgcolor: '#358e93d7', textTransform: 'none', fontWeight: 700, fontSize: '15px' ,'&:hover': {
+                  backgroundColor: '#358e93d7',
+                  color: 'white',
+                  
+                }}}
+              
       >
-        <AddCircleIcon />
-        {'    '} Ajouter Format
+      
+        Ajouter un format
       </Button>
 
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          borderTop: '1px solid gray',
-          marginTop: '10px'
-        }}
-      >
-        <div style={{ width: '100%', borderRight: '1px solid gray' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 1fr', gap: '10px', borderBottom: '1px solid gray' }}>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>Nom de tole</p>
-            <p style={{ fontSize: '18px', fontWeight: '700' }}>Les dimensions</p>
-            <p style={{ fontSize: '18px', fontWeight: '700', marginLeft: '10px' }}>Quantité</p>
-          </div>
-          {data?.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr 1fr 1fr',
-                gap: '5px',
-                alignItems: 'center',
-                borderBottom: '1px solid gray',
-                paddingTop: '10px',
-                paddingBottom: '10px'
-              }}
-            >
-              <OutlinedInput
-                id={`name-${index}`}
-                type="text"
-                placeholder={'Nom du tole'}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <EditIcon sx={{ cursor: 'pointer', color: '#28DCE7', fontSize: '20px' }} />
-                  </InputAdornment>
-                }
-                aria-describedby="outlined-weight-helper-text"
-                value={item.name}
-                onChange={(e) => handleNameChange(index, e.target.value)}
-                style={{ height: '40px' }}
-              />
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <OutlinedInput
-                  id={`largeur-${index}`}
-                  value={item.largeur}
-                  onChange={(e) => handleDimensionChange(index, 'largeur', e.target.value)}
-                  endAdornment={<InputAdornment position="end">mm</InputAdornment>}
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    'aria-label': 'largeur'
-                  }}
-                  style={{ height: '40px' }}
-                />
-                <CloseIcon style={{ height: '40px' }} />
-                <OutlinedInput
-                  id={`hauteur-${index}`}
-                  type="number"
-                  value={item.hauteur}
-                  onChange={(e) => handleDimensionChange(index, 'hauteur', e.target.value)}
-                  endAdornment={<InputAdornment position="end">mm</InputAdornment>}
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    'aria-label': 'hauteur'
-                  }}
-                  style={{ height: '40px' }}
-                />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                <button
-                  onClick={() => handleQuantityChange(index, item.quantity - 1)}
-                  style={{
-                    cursor: 'pointer',
-                    background: 'grey',
-                    color: 'white',
-                    border: '0',
-                    fontSize: '18px',
-                    borderRadius: '5px',
-                    width: '25px',
-                    height: '25px',
-                    marginLeft: '10px'
-                  }}
-                >
-                  -
-                </button>
-                <span>{item.quantity}</span>
-                <button
-                  onClick={() => handleQuantityChange(index, item.quantity + 1)}
-                  style={{
-                    cursor: 'pointer',
-                    background: 'grey',
-                    color: 'white',
-                    border: '0',
-                    fontSize: '18px',
-                    borderRadius: '5px',
-                    width: '25px',
-                    height: '25px'
-                  }}
-                >
-                  +
-                </button>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                {!confirmationState[item.id] ? (
-                  <DeleteIcon onClick={() => toggleConfirmDelete(item.id)} style={{ cursor: 'pointer', color: 'red' }} />
-                ) : (
-                  <>
-                    <Button
-                      sx={{ cursor: 'pointer', color: 'grey', borderRadius: '20px' }}
-                      variant="outlined"
-                      onClick={() => toggleConfirmDelete(item.id)}
-                    >
-                      Annuler
-                    </Button>
-                    <Button
-                      sx={{ cursor: 'pointer', color: 'white', backgroundColor: 'red', borderRadius: '20px' }}
-                      variant="contained"
-                      onClick={() => handleDeleteFormat(item.id, index)}
-                    >
-                      Confirmer
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ width: '100%', paddingTop: '10px' }}>
-          <span style={{ color: 'grey', fontWeight: 'bold', fontSize: '30px' }}>Paramétres de placement :</span>
-          <div style={{ display: 'flex', gap: '20px' }}>
-            <div style={{ width: '100%' }}>
-              <p>Ecart selon x</p>
-              <OutlinedInput
-                id="x"
-                type="number"
-                aria-describedby="x-helper-text"
-                value={margins.x}
-                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
-                onChange={(e) => handleMarginChange('x', e.target.value)}
-                inputProps={{
-                  'aria-label': 'x'
-                }}
-                style={{ height: '40px', width: '100%' }}
-              />
-            </div>
-            <div style={{ width: '100%' }}>
-              <p>Ecart selon y </p>
-              <OutlinedInput
-                id="y"
-                type="number"
-                aria-describedby="y-helper-text"
-                value={margins.y}
-                endAdornment={<InputAdornment position="end">mm</InputAdornment>}
-                onChange={(e) => handleMarginChange('y', e.target.value)}
-                inputProps={{
-                  'aria-label': 'y'
-                }}
-                style={{ height: '40px', width: '100%' }}
-              />
-            </div>
-            <div style={{ width: '100%' }}>
-              <p>Orientation </p>
+      <TableContainer component={Paper} sx={{ mt: 1, borderRadius: '15px', width: '100%' }}>
+        <Table>
+          <TableHead sx={{ bgcolor: '#F5F5F5' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign:'center' }}>Nom de tole</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign:'center' }}>Les dimensions</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333' }}>Quantité</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign: 'center' }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
 
-              <Select
-                value={selectedOption}
-                onChange={(e) => setSelectedOption(e.target.value)}
-                displayEmpty
-                inputProps={{ 'aria-label': 'orientation' }}
-                style={{ height: '40px', width: '100%' }}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={false}>horizontal</MenuItem>
-                <MenuItem value={true}>vertical</MenuItem>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          <TableBody>
+            {data.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell sx={{ width: '20%' }}>
+                  <OutlinedInput
+                    id={`name-${index}`}
+                    type="text"
+                    placeholder="Nom du tole"
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <EditIcon sx={{ cursor: 'pointer', color: 'grey', fontSize: '20px' }} />
+                      </InputAdornment>
+                    }
+                    value={item.name}
+                    onChange={(e) => handleNameChange(index, e.target.value)}
+                    sx={{ height: '30px', width: '100%' }}
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <OutlinedInput
+                    id={`largeur-${index}`}
+                    type="number"
+                    value={item.largeur}
+                    onChange={(e) => handleDimensionChange(index, 'largeur', e.target.value)}
+                    endAdornment={<InputAdornment position="end">mm</InputAdornment>}
+                    sx={{ height: '30px', width: '150px', mr: 1 }}
+                  />
+                  <CloseIcon />
+                  <OutlinedInput
+                    id={`hauteur-${index}`}
+                    type="number"
+                    value={item.hauteur}
+                    onChange={(e) => handleDimensionChange(index, 'hauteur', e.target.value)}
+                    endAdornment={<InputAdornment position="end">mm</InputAdornment>}
+                    sx={{ height: '30px', width: '150px', ml: 1 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Tooltip title="Diminuer">
+                      <IconButton onClick={() => handleQuantityChange(index, item.quantity - 1)} sx={{ color: '#FF5722' }}>
+                        <RemoveCircleOutlineIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Typography variant="body1" sx={{ mx: 1 }}>
+                      {item.quantity}
+                    </Typography>
+                    <Tooltip title="Augmenter">
+                      <IconButton onClick={() => handleQuantityChange(index, item.quantity + 1)} sx={{ color: '#4CAF50' }}>
+                        <AddCircleOutlineIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </TableCell>
+                <TableCell align="center">
+                  {!confirmationState[index] ? (
+                    <Tooltip title="Supprimer">
+                      <IconButton onClick={() => toggleConfirmDelete(index)} sx={{ color: '#F44336' }}>
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                    </Tooltip>
+                  ) : (
+                    <>
+                      <Button
+                        variant="outlined"
+                        onClick={() => toggleConfirmDelete(index)}
+                        sx={{ cursor: 'pointer', textTransform: 'none',    marginRight: '10px',
+                borderRadius: '20px',
+                backgroundColor: 'white',
+                textTransform: 'none',
+                color: 'grey',
+                border: '2px solid grey',
+                marginTop:'5px',
+                fontWeight:600,
+
+                '&:hover': {
+                  backgroundColor: '#ffff',
+                  color: 'grey',
+                  border: '2px solid grey'
+                }  }}
+                      >
+                        Annuler
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleDeleteFormat(item.id, index)}
+                        sx={{ cursor: 'pointer', textTransform: 'none'  , marginRight: '10px',
+                borderRadius: '30px',
+                backgroundColor: '#d61717',
+                textTransform: 'none',
+                color: '#ffff',
+                border: '2px solid #d61717',
+                marginTop:'5px',
+                fontWeight:600,
+
+                '&:hover': {
+                  backgroundColor: '#e22222',
+                  color: 'white',
+                  border: '2px solid #e22222'
+                }   }}
+                      >
+                        Confirmer
+                      </Button>
+                    </>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Box sx={{ width: '100%', pt: 2, mb: 5 }}>
+        <Typography variant="h4" fontWeight="bold" color="grey" sx={{ flexGrow: 1 }}>
+          Paramètres de placement :
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={4} sx={{ mb: 1, mt: 1 }}>
+            <Typography>Écart selon l'axe X :</Typography>
+            <OutlinedInput
+              id="x"
+              type="number"
+              value={margins.x}
+              endAdornment={<InputAdornment position="end">mm</InputAdornment>}
+              onChange={(e) => handleMarginChange('x', e.target.value)}
+              sx={{ height: '35px', width: '100%' }}
+            />
+          </Grid>
+          <Grid item xs={4} sx={{ mb: 1, mt: 1 }}>
+            <Typography>Écart selon l'axe Y :</Typography>
+            <OutlinedInput
+              id="y"
+              type="number"
+              value={margins.y}
+              endAdornment={<InputAdornment position="end">mm</InputAdornment>}
+              onChange={(e) => handleMarginChange('y', e.target.value)}
+              sx={{ height: '35px', width: '100%' }}
+            />
+          </Grid>
+          <Grid item xs={4} sx={{ mb: 1, mt: 1 }}>
+            <Typography>Orientation :</Typography>
+            <Select
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(e.target.value)}
+              displayEmpty
+              inputProps={{ 'aria-label': 'orientation' }}
+              sx={{ height: '35px', width: '100%' }}
+            >
+              <MenuItem value="">
+                <em>Aucune</em>
+              </MenuItem>
+              <MenuItem value={false}>Horizontale</MenuItem>
+              <MenuItem value={true}>Verticale</MenuItem>
+            </Select>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 });
 

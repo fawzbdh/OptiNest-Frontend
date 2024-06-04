@@ -7,16 +7,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createProject, deleteProject, fetchprojectByUserId, updateProject } from '../../store/reducers/projectReducer';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import CheckIcon from '@mui/icons-material/Check';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
 import Swal from 'sweetalert2';
 import { DatePicker } from 'antd';
 import InputAdornment from '@mui/material/InputAdornment';
-
 import { OutlinedInput, Box, CircularProgress } from '@mui/material';
 const { RangePicker } = DatePicker;
+
 function Projet() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ function Projet() {
       [fileId]: false
     }));
   };
+
   const handleNouveauProjetClick = () => {
     dispatch(createProject({})) // Dispatch the createProject action
       .then((data) => {
@@ -95,11 +97,12 @@ function Projet() {
   if (error === 'Request failed with status code 401') {
     return navigate('/login');
   }
+
   const columns = [
     {
       field: 'name',
       headerName: 'Nom projet',
-      width: 200,
+      width: 180,
       editable: true,
       renderCell: (params) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -115,33 +118,35 @@ function Projet() {
               height: '40px',
               border: '1px solid #ccc',
               borderRadius: '5px',
-              padding: '5px'
+              padding: '5px',
+              marginTop: '5px'
             }}
             endAdornment={
               <InputAdornment position="end">
-                <EditIcon sx={{ cursor: 'pointer', color: '#28DCE7', fontSize: '20px' }} onClick={() => handleEditCellChange(params)} />
+                <EditNoteOutlinedIcon sx={{ cursor: 'pointer', color: 'grey', fontSize: '20px' }} onClick={() => handleEditCellChange(params)} />
               </InputAdornment>
             }
           />
         </div>
       )
     },
-
     {
       field: 'createdAt',
       headerName: 'Date de creation',
       valueGetter: (value, row) => moment(row.createdAt).format('YYYY-MM-DD'),
-      width: 200
+      width: 200,
+      alignItems:'center'
     },
     {
       field: 'status',
       headerName: 'Statut',
-      width: 200
+      width: 120
     },
     {
       field: 'actions',
       headerName: 'Actions',
       flex: 1,
+      width: 300,
       renderCell: (params) => (
         <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
           {params.row.status === 'Ebauche' && (
@@ -154,18 +159,20 @@ function Projet() {
                 marginRight: '10px',
                 borderRadius: '20px',
                 backgroundColor: 'white',
-                color: '#28DCE7',
-                border: '1px solid #28DCE7',
+                color: '#1cbac2',
+                border: '2px solid #1cbac2',
                 textTransform: 'none',
+                marginTop: '5px',
+                fontWeight: 600,
                 '&:hover': {
-                  backgroundColor: '#28DCE7',
+                  backgroundColor: '#1cbac2',
                   color: 'white',
-                  border: '1px solid white'
+                  border: '1px solid #1cbac2'
                 }
               }}
               startIcon={<ArrowRightIcon />}
             >
-              Réprendre
+              Reprendre
             </Button>
           )}
           {params.row.status === 'Prêt' && (
@@ -176,12 +183,14 @@ function Projet() {
                 borderRadius: '20px',
                 backgroundColor: 'white',
                 textTransform: 'none',
-                color: '#28DCE7',
-                border: '1px solid #28DCE7',
+                color: '#20de69',
+                border: '2px solid #20de69',
+                marginTop: '5px',
+                fontWeight: 600,
                 '&:hover': {
-                  backgroundColor: '#28DCE7',
+                  backgroundColor: '#20de69',
                   color: 'white',
-                  border: '1px solid white'
+                  border: '1px solid #20de69'
                 }
               }}
               startIcon={<CheckIcon />}
@@ -193,7 +202,6 @@ function Projet() {
               Résultat
             </Button>
           )}
-
           {params.row.status === 'Prêt' && (
             <Button
               sx={{
@@ -202,11 +210,13 @@ function Projet() {
                 backgroundColor: 'white',
                 textTransform: 'none',
                 color: '#C1B100',
-                border: '1px solid #C1B100',
+                border: '2px solid #C1B100',
+                marginTop: '5px',
+                fontWeight: 600,
                 '&:hover': {
                   backgroundColor: '#C1B100',
                   color: 'white',
-                  border: '1px solid white'
+                  border: '1px solid #C1B100'
                 }
               }}
               onClick={async () => {
@@ -220,21 +230,53 @@ function Projet() {
             </Button>
           )}
           {!confirmationState[params.row.id] ? (
-            <DeleteIcon
-              sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer', alignSelf: 'self' }}
+            <DeleteOutlineOutlinedIcon
+              sx={{ color: '#FF5722', marginLeft: '10px', cursor: 'pointer', alignSelf: 'self' }}
               onClick={() => toggleConfirmDelete(params.row.id)}
             />
           ) : (
             <>
               <Button
-                sx={{ cursor: 'pointer', textTransform: 'none', color: 'grey', borderRadius: '20px' }}
+                sx={{
+                  cursor: 'pointer',
+                  textTransform: 'none',
+                  marginRight: '10px',
+                  borderRadius: '20px',
+                  backgroundColor: 'white',
+                  textTransform: 'none',
+                  color: 'grey',
+                  border: '2px solid grey',
+                  marginTop: '5px',
+                  fontWeight: 600,
+                  '&:hover': {
+                    backgroundColor: '#ffff',
+                    color: 'grey',
+                    border: '2px solid grey'
+                  }
+                }}
                 variant="outlined"
                 onClick={() => toggleConfirmDelete(params.row.id)}
               >
                 Annuler
               </Button>
               <Button
-                sx={{ cursor: 'pointer', textTransform: 'none', color: 'white', backgroundColor: 'red', borderRadius: '20px' }}
+                sx={{
+                  cursor: 'pointer',
+                  textTransform: 'none',
+                  marginRight: '10px',
+                  borderRadius: '30px',
+                  backgroundColor: '#d61717',
+                  textTransform: 'none',
+                  color: '#ffff',
+                  border: '2px solid #d61717',
+                  marginTop: '5px',
+                  fontWeight: 600,
+                  '&:hover': {
+                    backgroundColor: '#e22222',
+                    color: 'white',
+                    border: '2px solid #e22222'
+                  }
+                }}
                 variant="contained"
                 onClick={() => handleDeleteProjet(params.row.id)}
               >
@@ -250,20 +292,41 @@ function Projet() {
   const onChange = (date, dateString) => {
     setFilterDate(dateString);
   };
+
   return (
     <MainCard>
-      <Typography variant="h3">Projets</Typography>
+      <Typography variant="h3">Liste des projets :</Typography>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button
           onClick={handleNouveauProjetClick}
-          sx={{ borderRadius: '20px', textTransform: 'none', backgroundColor: '#28DCE7', marginTop: '20px', marginBottom: '20px' }}
-          variant="contained"
+          sx={{
+            borderRadius: '30px',
+            textTransform: 'none',
+            backgroundColor: '#358e93d7',
+            color: 'white',
+            border: '2px solid #358e93d7',
+            fontWeight: 600,
+            fontSize: '16px',
+            marginTop: '20px',
+            marginLeft: '20px',
+            padding: '6px 25px',
+            marginBottom: '20px',
+            padding:'6px 20px',
+            '&:hover': {
+              backgroundColor: '#3da0a5d7',
+              color: 'white',
+              border: '2px solid #3da0a5d7 ',
+            }
+          }}
+          variant="s"
         >
           Nouveau projet
         </Button>
         <RangePicker onChange={onChange} />
       </div>
+
       <DataGrid
+      autoHeight
         onEditCellChange={handleEditCellChange}
         pagination
         initialState={{
@@ -273,20 +336,32 @@ function Projet() {
         pageSizeOptions={[5, 10, 25]}
         sx={{
           width: '99%',
-          padding: '20px',
           margin: 'auto',
+          boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)',
+          borderRadius: '30px',
+          overflow: 'hidden',
           '& .MuiDataGrid-columnHeaders': {
             backgroundColor: '#f5f5f5',
             color: '#333',
-            fontSize: '18px',
-            fontWeight: 'bold'
+            fontSize: '16px',
+            fontWeight: 'bold',
+            borderBottom: '2px solid #f2f2f2 '
           },
           '& .MuiDataGrid-columnSeparator': {
             display: 'none'
           },
           '& .MuiDataGrid-cell': {
-            borderBottom: '1px solid #ddd',
-            fontSize: '16px' // Change the font size of the content here
+            borderBottom: '1px solid #e0e0e0',
+            fontSize: '15px'
+          },
+          '& .MuiDataGrid-row': {
+            '&:hover': {
+              backgroundColor: '#f2f2f2 '
+            }
+          },
+          '& .MuiDataGrid-footerContainer': {
+            backgroundColor: '#f2f2f2 ',
+            borderTop: '1px solid #f2f2f2 '
           }
         }}
         rows={projects.filter((item) =>
@@ -297,6 +372,7 @@ function Projet() {
         )}
         columns={columns}
       />
+    
     </MainCard>
   );
 }

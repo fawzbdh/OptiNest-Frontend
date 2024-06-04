@@ -17,8 +17,6 @@ FileList.propTypes = {
   files: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired
-
-      // Add other properties of a file object here if needed
     })
   ).isRequired
 };

@@ -60,11 +60,11 @@ const Header = ({ open, handleDrawerToggle }) => {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
           <Tooltip
             sx={{
-              backgroundColor: 'green',
-              color: 'white',
+              backgroundColor: 'white',
+              color: 'grey',
               borderRadius: '4px',
-              padding: '8px',
-              fontSize: '14px',
+              padding: '20px',
+              fontSize: '18px',
               fontWeight: 'bold'
             }}
             title="Déconnexion"

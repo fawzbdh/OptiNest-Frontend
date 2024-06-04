@@ -97,14 +97,18 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
             fullWidth
           />
         </div>
-        <Button sx={{ textTransform: 'none' }} variant="contained" style={{ marginLeft: '20px' }} onClick={handleUpdateName}>
-          Mettre à jour
+        <Button sx={{ textTransform: 'none' ,borderRadius: '30px', bgcolor: '#358e93d7', textTransform: 'none', fontWeight: 700, fontSize: '15px' ,'&:hover': {
+                  backgroundColor: '#358e93d7',
+                  color: 'white',
+                  
+                } }} variant="contained" style={{ marginLeft: '20px' , borderRadius:'17px',fontWeight:600,fontSize:'14px' }} onClick={handleUpdateName}>
+          Valider
         </Button>
       </div>
       <Typography style={{ marginTop: '20px', marginRight: '20px' }} variant="h4">
         Télécharger vos pièces
       </Typography>
-      <div style={{ marginTop: '40px' }}>
+      <div style={{ marginTop: '20px' }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <div onDragOver={handleDragOver} onDrop={handleDrop}>
@@ -116,7 +120,8 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
                   display: 'block',
                   margin: '0px',
                   padding: '0px',
-                  height: '320px'
+                  height: '280px',
+                 
                 }}
               >
                 <Card
@@ -124,8 +129,12 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
                     margin: '0px',
                     padding: '0px',
                     height: '100%',
+                    border: '2px dashed #ccc',
+                  borderRadius:'15px',
+              
+                 
                     '&:hover': {
-                      backgroundColor: '#f5f5f5',
+                      backgroundColor: '#e5fcd3a2',
                       cursor: 'pointer',
                       boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)' // Add boxShadow on hover
                     }
@@ -156,11 +165,11 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
                       />
                       <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
                     </svg>
-                    <p style={{ color: 'white', padding: '10px', marginTop: '20px', borderRadius: '20px', backgroundColor: '#28DCE7' }}>
-                      Télécharger votre pièce{' '}
+                    <p style={{ color: 'white', padding: '10px 30px', marginTop: '20px', borderRadius: '30px', backgroundColor: '#9be673',borderColor:'#9be673', fontWeight:600,fontSize:'15px' }}>
+                      Télécharger vos pièces{' '}
                     </p>
 
-                    <Typography sx={{ margin: '0px', marginTop: '20px' }} variant="body1" gutterBottom>
+                    <Typography sx={{ margin: '0px', marginTop: '10px' }} variant="body1" gutterBottom>
                       Or drag & drop your files here
                     </Typography>
                     <Typography sx={{ margin: '0px' }} variant="body1" gutterBottom>
@@ -173,7 +182,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Card style={{ margin: '0px', padding: '0px', height: '320px' }}>
+            <Card style={{ margin: '0px', padding: '0px', height: '280px' , borderRadius:'10px',border: '2px solid #ccc',}}>
               <CardContent style={{ margin: '0px', padding: '0px' }}>
                 <div style={{ backgroundColor: '#F5F5F5', width: '100%', height: '70px', margin: '0px', padding: '0px' }}>
                   <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>

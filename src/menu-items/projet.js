@@ -15,7 +15,7 @@ const projet = {
   children: [
     {
       id: 'projet',
-      title: 'Projets',
+      title: 'Liste des projets',
       type: 'item',
       url: '/projet',
       icon: icons.DashboardOutlined,

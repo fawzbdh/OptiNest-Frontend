@@ -6,6 +6,7 @@ import DashboardHeader from './title';
 import UserCards from './userCards';
 import MainCard from 'components/MainCard';
 import { fetchUsers, signupUser } from 'store/reducers/authSlice';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 function GestionUtilisateurs() {
   const dispatch = useDispatch();
@@ -76,17 +77,18 @@ function GestionUtilisateurs() {
   };
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 400, width: '100%' ,marginTop:'30px'}}>
       <MainCard>
-        <Box m="8px 0 0 0" width="100%" height="80vh">
-          <DashboardHeader title={'Gérer les utilisateurs'} />
+        <Box m="0px 0  0" width="100%" height="60vh"  >
+          <DashboardHeader title={'Gérer les utilisateurs :'} />
           <Button
             sx={{ textTransform: 'none' }}
             onClick={() => setIsDrawerOpen(true)}
             variant="contained"
             color="primary"
-            style={{ marginBottom: '50px', marginTop: '50px' }}
+            style={{ marginBottom: '30px', marginTop: '20px', borderRadius:"20px",fontWeight:600,fontSize:"15px",color: '#52ab74',  border: '2px solid #52ab74',backgroundColor:"#ffff"}}
           >
+             <PersonAddAltIcon />
             Ajouter un utilisateur
           </Button>
           <Drawer
@@ -115,7 +117,7 @@ function GestionUtilisateurs() {
                 <Button
                   sx={{ textTransform: 'none' }}
                   onClick={() => setIsDrawerOpen(false)}
-                  style={{ borderRadius: '20px', color: '#222C60', borderColor: '#222C60' }}
+                  style={{ borderRadius: '20px', color: '#000',  border: '1px solid #000',fontWeight:600}}
                   variant="outlined"
                 >
                   Annuler
@@ -124,12 +126,12 @@ function GestionUtilisateurs() {
                 <Button
                   sx={{ textTransform: 'none' }}
                   onClick={handleSubmit}
-                  style={{ borderRadius: '20px', backgroundColor: '#00BA88' }}
+                  style={{ borderRadius: '20px', backgroundColor: '#00BA88' ,fontWeight:600}}
                   type="submit"
                   variant="contained"
                   color="primary"
                 >
-                  Publier
+                  Enregistrer
                 </Button>
               </Box>
             </Box>

@@ -114,7 +114,7 @@ function AuthLogin() {
     <div
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(to left, #28DCE7, #42b603,#a4f678, #FFFFFF)', // Change direction to bottom left
+        background: 'linear-gradient(to left, #47ff9aef, #93fcc2ef,#b1f8d1ef , #FFFFFF)', // Change direction to bottom left
         color: '#fff',
         display: 'flex',
         justifyContent: 'center',
@@ -123,8 +123,8 @@ function AuthLogin() {
     >
       <Formik
         initialValues={{
-          email: 'alibenbrahimpro@gmail.com',
-          password: '12345678',
+          email: '',
+          password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -199,7 +199,7 @@ function AuthLogin() {
                           variant="subtitle1"
                           gutterBottom
                         >
-                          Email
+                          Email :
                         </Typography>
                       </Box>
 
@@ -235,7 +235,7 @@ function AuthLogin() {
                           variant="subtitle1"
                           gutterBottom
                         >
-                          Mot de passe
+                          Mot de passe :
                         </Typography>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                           <InputAdornment position="end">
@@ -304,7 +304,7 @@ function AuthLogin() {
                       />
                     </Box>
                     <CardContent>
-                      <Grid container justifyContent="start" alignItems="center" gap={2}>
+                      <Grid container justifyContent="center" alignItems="center" gap={2}>
                         <Grid item>
                           <Button
                             type="submit"
@@ -319,10 +319,10 @@ function AuthLogin() {
                               fontSize: '16px',
                               lineHeight: '24px',
                               color: '#FFFFFF',
-                              backgroundColor: '#0A8401',
+                              backgroundColor: '#45bb74',
                               width: '150px',
                               '&:hover': {
-                                backgroundColor: '#0A8401',
+                                backgroundColor: '#45bb74',
                                 opacity: 0.8
                               }
                             }}

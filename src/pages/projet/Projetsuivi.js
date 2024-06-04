@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,11 +7,12 @@ import { fetchProjects } from '../../store/reducers/projectReducer';
 import moment from 'moment';
 import { DatePicker } from 'antd';
 import { Link } from 'react-router-dom';
-import EditIcon from '@mui/icons-material/Edit';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import InputAdornment from '@mui/material/InputAdornment';
 import { OutlinedInput } from '@mui/material';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 const { RangePicker } = DatePicker;
 
 function ProjetSuivi() {
@@ -24,11 +24,15 @@ function ProjetSuivi() {
     dispatch(fetchProjects());
   }, [dispatch]);
 
+  const handleEditCellChange = (params) => {
+    // Add your cell edit logic here
+  };
+
   const columns = [
     {
       field: 'name',
       headerName: 'Nom projet',
-      width: 200,
+      width: 180,
       editable: true,
       renderCell: (params) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -48,7 +52,7 @@ function ProjetSuivi() {
             }}
             endAdornment={
               <InputAdornment position="end">
-                <EditIcon sx={{ cursor: 'pointer', color: '#28DCE7', fontSize: '20px' }} onClick={() => handleEditCellChange(params)} />
+                <EditNoteOutlinedIcon sx={{ cursor: 'pointer', color: 'grey', fontSize: '20px' }} onClick={() => handleEditCellChange(params)} />
               </InputAdornment>
             }
           />
@@ -59,34 +63,32 @@ function ProjetSuivi() {
       field: 'createdAt',
       headerName: 'Date de creation',
       valueGetter: (value, row) => moment(row.createdAt).format('YYYY-MM-DD'),
-      width: 200
+      width: 250
     },
     {
       field: 'status',
-      headerName: 'status',
+      headerName: 'Status',
       width: 200
     },
     {
       field: 'feedback',
-      headerName: 'Action',
-      width: 200,
+      headerName: 'Actions',
+      width: 280,
       renderCell: (params) => (
         <div>
           <Link to={`/feedback/${params.row.id}`}>
-            <EditIcon
-              // Assuming id is the project ID
+            <ChatBubbleOutlineRoundedIcon
               variant="contained"
               color="primary"
-              sx={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}
+              sx={{ color: '#C1B100', marginLeft: '10px', cursor: 'pointer' }}
             />
           </Link>
           {params.row.status !== 'Ebauche' && (
             <Link to={`/couper/${params.row.id}`}>
-              <RemoveRedEyeIcon
-                // Assuming id is the project ID
+              <RemoveRedEyeOutlinedIcon
                 variant="contained"
                 color="primary"
-                sx={{ color: 'green', marginLeft: '10px', cursor: 'pointer' }}
+                sx={{ color: '#1abb58', marginLeft: '10px', cursor: 'pointer' }}
               />
             </Link>
           )}
@@ -98,9 +100,10 @@ function ProjetSuivi() {
   const onChange = (date, dateString) => {
     setFilterDate(dateString);
   };
+
   return (
     <MainCard>
-      <Typography variant="h3">Suivi Projet</Typography>
+      <Typography variant="h3">Liste des projet à suivre :</Typography>
       <br />
       <RangePicker onChange={onChange} />
       <br />
@@ -116,18 +119,31 @@ function ProjetSuivi() {
         sx={{
           width: '99%',
           margin: 'auto',
+          boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)',
+          borderRadius: '30px',
+          overflow: 'hidden',
           '& .MuiDataGrid-columnHeaders': {
             backgroundColor: '#f5f5f5',
             color: '#333',
-            fontSize: '18px',
-            fontWeight: 'bold'
+            fontSize: '16px',
+            fontWeight: 'bold',
+            borderBottom: '2px solid #f2f2f2 '
           },
           '& .MuiDataGrid-columnSeparator': {
             display: 'none'
           },
           '& .MuiDataGrid-cell': {
-            borderBottom: '1px solid #ddd',
-            fontSize: '16px' // Change the font size of the content here
+            borderBottom: '1px solid #e0e0e0',
+            fontSize: '15px'
+          },
+          '& .MuiDataGrid-row': {
+            '&:hover': {
+              backgroundColor: '#f2f2f2 '
+            }
+          },
+          '& .MuiDataGrid-footerContainer': {
+            backgroundColor: '#f2f2f2 ',
+            borderTop: '1px solid #f2f2f2 '
           }
         }}
         rows={projects.filter((item) =>
