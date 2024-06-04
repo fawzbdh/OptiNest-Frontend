@@ -25,6 +25,7 @@ function ProjetSuivi() {
   }, [dispatch]);
 
   const handleEditCellChange = (params) => {
+    console.log(params);
     // Add your cell edit logic here
   };
 
@@ -52,7 +53,10 @@ function ProjetSuivi() {
             }}
             endAdornment={
               <InputAdornment position="end">
-                <EditNoteOutlinedIcon sx={{ cursor: 'pointer', color: 'grey', fontSize: '20px' }} onClick={() => handleEditCellChange(params)} />
+                <EditNoteOutlinedIcon
+                  sx={{ cursor: 'pointer', color: 'grey', fontSize: '20px' }}
+                  onClick={() => handleEditCellChange(params)}
+                />
               </InputAdornment>
             }
           />

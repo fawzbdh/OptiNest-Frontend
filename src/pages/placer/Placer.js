@@ -16,7 +16,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,20 +26,10 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import {
-  createContainer,
-  updateContainer,
-  fetchContainerByProjectId,
-} from 'store/reducers/containerReducer';
-import {
-  createMultipleFormats,
-  deleteFormat,
-  fetchFormatByProjectId,
-  updateMultipleFormats,
-} from 'store/reducers/formatReducer';
+import { createContainer, updateContainer, fetchContainerByProjectId } from 'store/reducers/containerReducer';
+import { createMultipleFormats, deleteFormat, fetchFormatByProjectId, updateMultipleFormats } from 'store/reducers/formatReducer';
 import { createOptimisation } from 'store/reducers/optimisationReducer';
 import { updateProject } from 'store/reducers/projectReducer';
-import { Padding } from '../../../node_modules/@mui/icons-material/index';
 
 const Placer = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -50,7 +40,7 @@ const Placer = React.forwardRef((props, ref) => {
 
   const [margins, setMargins] = useState({
     x: '',
-    y: '',
+    y: ''
   });
 
   const containers = useSelector((state) => state.container.containers);
@@ -66,7 +56,7 @@ const Placer = React.forwardRef((props, ref) => {
     if (container) {
       setMargins({
         x: container.x || '',
-        y: container.y || '',
+        y: container.y || ''
       });
       setSelectedOption(container.vertical !== undefined ? container.vertical : '');
     }
@@ -80,7 +70,7 @@ const Placer = React.forwardRef((props, ref) => {
           name: format.nom,
           hauteur: format.hauteur,
           largeur: format.largeur,
-          quantity: format.quantity,
+          quantity: format.quantity
         }))
       );
     }
@@ -106,7 +96,7 @@ const Placer = React.forwardRef((props, ref) => {
     handleDeleteRow(index);
     setConfirmationState((prevState) => ({
       ...prevState,
-      [index]: false,
+      [index]: false
     }));
   };
 
@@ -129,7 +119,7 @@ const Placer = React.forwardRef((props, ref) => {
   const handleMarginChange = (direction, value) => {
     setMargins((prevState) => ({
       ...prevState,
-      [direction]: value,
+      [direction]: value
     }));
   };
 
@@ -143,7 +133,7 @@ const Placer = React.forwardRef((props, ref) => {
     const containerData = {
       x: margins.x,
       y: margins.y,
-      vertical: selectedOption,
+      vertical: selectedOption
     };
 
     try {
@@ -177,13 +167,13 @@ const Placer = React.forwardRef((props, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    handleSubmit: handleSubmit,
+    handleSubmit: handleSubmit
   }));
 
   const toggleConfirmDelete = (index) => {
     setConfirmationState((prevState) => ({
       ...prevState,
-      [index]: !prevState[index],
+      [index]: !prevState[index]
     }));
   };
 
@@ -196,14 +186,20 @@ const Placer = React.forwardRef((props, ref) => {
         variant="contained"
         startIcon={<AddCircleOutlineIcon />}
         onClick={addSheet}
-        sx={{ mb: 1, mt: 1, borderRadius: '30px', bgcolor: '#358e93d7', textTransform: 'none', fontWeight: 700, fontSize: '15px' ,'&:hover': {
-                  backgroundColor: '#358e93d7',
-                  color: 'white',
-                  
-                }}}
-              
+        sx={{
+          mb: 1,
+          mt: 1,
+          borderRadius: '30px',
+          bgcolor: '#358e93d7',
+          textTransform: 'none',
+          fontWeight: 700,
+          fontSize: '15px',
+          '&:hover': {
+            backgroundColor: '#358e93d7',
+            color: 'white'
+          }
+        }}
       >
-      
         Ajouter un format
       </Button>
 
@@ -211,8 +207,8 @@ const Placer = React.forwardRef((props, ref) => {
         <Table>
           <TableHead sx={{ bgcolor: '#F5F5F5' }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign:'center' }}>Nom de tole</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign:'center' }}>Les dimensions</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign: 'center' }}>Nom de tole</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign: 'center' }}>Les dimensions</TableCell>
               <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333' }}>Quantité</TableCell>
               <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: '#333', textAlign: 'center' }}>Actions</TableCell>
             </TableRow>
@@ -285,40 +281,46 @@ const Placer = React.forwardRef((props, ref) => {
                       <Button
                         variant="outlined"
                         onClick={() => toggleConfirmDelete(index)}
-                        sx={{ cursor: 'pointer', textTransform: 'none',    marginRight: '10px',
-                borderRadius: '20px',
-                backgroundColor: 'white',
-                textTransform: 'none',
-                color: 'grey',
-                border: '2px solid grey',
-                marginTop:'5px',
-                fontWeight:600,
+                        sx={{
+                          cursor: 'pointer',
+                          textTransform: 'none',
+                          marginRight: '10px',
+                          borderRadius: '20px',
+                          backgroundColor: 'white',
+                          color: 'grey',
+                          border: '2px solid grey',
+                          marginTop: '5px',
+                          fontWeight: 600,
 
-                '&:hover': {
-                  backgroundColor: '#ffff',
-                  color: 'grey',
-                  border: '2px solid grey'
-                }  }}
+                          '&:hover': {
+                            backgroundColor: '#ffff',
+                            color: 'grey',
+                            border: '2px solid grey'
+                          }
+                        }}
                       >
                         Annuler
                       </Button>
                       <Button
                         variant="contained"
                         onClick={() => handleDeleteFormat(item.id, index)}
-                        sx={{ cursor: 'pointer', textTransform: 'none'  , marginRight: '10px',
-                borderRadius: '30px',
-                backgroundColor: '#d61717',
-                textTransform: 'none',
-                color: '#ffff',
-                border: '2px solid #d61717',
-                marginTop:'5px',
-                fontWeight:600,
+                        sx={{
+                          cursor: 'pointer',
+                          textTransform: 'none',
+                          marginRight: '10px',
+                          borderRadius: '30px',
+                          backgroundColor: '#d61717',
+                          color: '#ffff',
+                          border: '2px solid #d61717',
+                          marginTop: '5px',
+                          fontWeight: 600,
 
-                '&:hover': {
-                  backgroundColor: '#e22222',
-                  color: 'white',
-                  border: '2px solid #e22222'
-                }   }}
+                          '&:hover': {
+                            backgroundColor: '#e22222',
+                            color: 'white',
+                            border: '2px solid #e22222'
+                          }
+                        }}
                       >
                         Confirmer
                       </Button>
@@ -337,7 +339,7 @@ const Placer = React.forwardRef((props, ref) => {
         </Typography>
         <Grid container spacing={4}>
           <Grid item xs={4} sx={{ mb: 1, mt: 1 }}>
-            <Typography>Écart selon l'axe X :</Typography>
+            <Typography>Écart selon l&apos;axe X :</Typography>
             <OutlinedInput
               id="x"
               type="number"
@@ -348,7 +350,7 @@ const Placer = React.forwardRef((props, ref) => {
             />
           </Grid>
           <Grid item xs={4} sx={{ mb: 1, mt: 1 }}>
-            <Typography>Écart selon l'axe Y :</Typography>
+            <Typography>Écart selon l&apos;axe Y :</Typography>
             <OutlinedInput
               id="y"
               type="number"
