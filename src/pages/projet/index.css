@@ -1,0 +1,25 @@
+
+  .ant-steps-item-process .ant-steps-item-icon {
+    background: #358e93d7 !important;
+    border: #358e93d7 !important;
+    color: wheat !important;
+  }
+  .ant-steps .ant-steps-item-icon .ant-steps-icon{
+   /* color: #358e93d7 !important; */
+  }
+  .ant-steps [class*=" ant-steps"]{
+    color: #358e93d7 !important;
+  }
+  .ant-steps.ant-steps-navigation .ant-steps-item::before{
+    background:#358e93d7 !important ;
+  }
+  .ant-steps-item-container[role='button']:hover{
+    border: #358e93d7 !important;
+    color: #358e93d7 !important;
+    .ant-steps-item-icon{
+        border-color:#358e93d7 !important;
+    }
+    .ant-steps-item-title{
+        color:#358e93d7 !important ;
+    }
+  }

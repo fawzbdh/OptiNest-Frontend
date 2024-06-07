@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux';
 import { dispatch } from 'store/index';
-import { createFichier } from '../../store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
+import { createFichier, deleteFichier } from '../../store/reducers/fichierReducer'; // Import the updateQuantity and updatePriority actions
 
 function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProjectName, projectId }) {
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0);
@@ -19,7 +19,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
   const [loading, setLoading] = useState(false);
   // const { status: statusfile } = useSelector((state) => state.fichier); // Get files from redux state
   const { files } = useSelector((state) => state.fichier);
-
+  console.log(uploadedFiles);
   const { project, status } = useSelector((state) => state.project);
   const handleFileChange = async (event) => {
     setUploadedFiles([]);
@@ -61,13 +61,16 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
     handleFileSelect(fileArray);
   };
 
-  const handleRemoveFile = (index) => {
-    const newFiles = [...uploadedFiles];
-    newFiles.splice(index, 1);
-    setUploadedFiles(newFiles);
-    setUploadedFilesCount(newFiles.length);
+  const handleRemoveFile = (index, files) => {
+    console.log('dsdsdssd', index, files);
+    dispatch(deleteFichier(files?.[index]?.id));
+    // const newFiles = [...uploadedFiles];
+    // newFiles.splice(index, 1);
+    const newtabfile = files.filter((item) => item.id !== files?.[index]?.id);
+    setUploadedFiles(newtabfile);
+    setUploadedFilesCount(newtabfile.length);
     // Call the parent component's handleFileSelect function to update the count
-    handleFileSelect(newFiles);
+    // handleFileSelect(newFiles);
   };
   if (status === 'loading') {
     return (
@@ -214,7 +217,7 @@ function ImporterFiles({ handleFileSelect, handleUploadedFiles, handleUpdateProj
                   </div>
                 </div>
                 <div style={{ padding: '20px' }}>
-                  <FileList files={files} onRemove={handleRemoveFile} />
+                  <FileList files={files} onRemove={(e) => handleRemoveFile(e, files)} />
                 </div>
               </CardContent>
             </Card>

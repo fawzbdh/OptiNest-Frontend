@@ -20,7 +20,7 @@ import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-
+import './index.css';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 const suivent = ['Configurer les quantités', 'Configurer le placement', "Démarrer l'optimisation"];
 
